@@ -7,6 +7,7 @@ import awsconfig from "../../src/aws-exports";
 Amplify.configure(awsconfig);
 
 import { Text, View } from "@/components/Themed";
+import DefaultHeader from "../components/DefaultHeader";
 
 export default function TabOneScreen() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function TabOneScreen() {
     <Authenticator.Provider>
       <Authenticator>
         <View style={styles.container}>
+          <DefaultHeader title="a" showSettingButton={true}/>
           <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
         </View>
       </Authenticator>
