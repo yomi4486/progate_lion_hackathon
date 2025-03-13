@@ -1,12 +1,27 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
+// eslint.config.js
+const eslint = require('@eslint/js')
+const tseslint = require('typescript-eslint')
+const prettier = require('eslint-config-prettier')
 
+const eslintConfig = tseslint.config(
+	eslint.configs.recommended,
+	...tseslint.configs.recommended,
+	{
+		files: ['**/*.ts', '**/*.tsx'],
+		rules: {
+			'@typescript-eslint/explicit-function-return-type': 'off',
+			'@typescript-eslint/no-explicit-any': 'warn',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{ argsIgnorePattern: '^_' },
+			],
+			'no-console': ['warn', { allow: ['warn', 'error'] }],
+		},
+	},
+	{
+		ignores: ['dist/', 'node_modules/', 'test/', 'eslint.config.cjs'],
+	},
+	prettier,
+)
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-  {files: ["**/*.{js,mjs,cjs,ts}"]},
-  {languageOptions: { globals: globals.browser }},
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-];
+module.exports = eslintConfig
