@@ -15,7 +15,7 @@ const eslintConfig = tseslint.config(
         "error",
         { argsIgnorePattern: "^_" },
       ],
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": ["warn", { allow: ["warn", "error","info"] }],
     },
   },
   {
