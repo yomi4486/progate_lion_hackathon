@@ -1,6 +1,10 @@
 import { StyleSheet, Button } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Auth } from 'aws-amplify';
+import { Authenticator } from '@aws-amplify/ui-react-native';
+import { Amplify } from 'aws-amplify';
+import awsconfig from '../../src/aws-exports';
+
+Amplify.configure(awsconfig);
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
@@ -10,7 +14,6 @@ export default function TabOneScreen() {
 
   const handleLogin = async () => {
     try {
-      await Auth.signIn('username', 'password');
       router.push('/home'); // Replace '/AnotherScreen' with your target screen path
     } catch (error) {
       console.log('Error signing in', error);
@@ -18,12 +21,14 @@ export default function TabOneScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-      <Button title="Login" onPress={handleLogin} />
-    </View>
+    <Authenticator>
+      <View style={styles.container}>
+        <Text style={styles.title}>Tab One</Text>
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <EditScreenInfo path="app/(tabs)/index.tsx" />
+        <Button title="Login" onPress={handleLogin} />
+      </View>
+    </Authenticator>
   );
 }
 
