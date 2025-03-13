@@ -21,15 +21,15 @@ export default function TabOneScreen() {
   };
 
   return (
-    <View style={{height: "100%"}}>
-    <DefaultHeader title="ホーム" showSettingButton={true}/>
-    <Authenticator.Provider>
-      <Authenticator>
-        <View style={styles.container}>
-          <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
-        </View>
-      </Authenticator>
-    </Authenticator.Provider>
+    <View style={{ height: "100%" }}>
+      <DefaultHeader title="ホーム" showSettingButton={true} />
+      <Authenticator.Provider>
+        <Authenticator>
+          <View style={styles.container}>
+            <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
+          </View>
+        </Authenticator>
+      </Authenticator.Provider>
     </View>
   );
 }
