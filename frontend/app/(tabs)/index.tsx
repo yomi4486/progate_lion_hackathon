@@ -1,14 +1,25 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Button } from "react-native";
+import { useRouter } from "expo-router";
+import { Authenticator } from "@aws-amplify/ui-react-native";
+import { Amplify } from "aws-amplify";
+import awsconfig from "../../src/aws-exports";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+Amplify.configure(awsconfig);
+
+import { Text, View } from "@/components/Themed";
+import DefaultHeader from "../components/DefaultHeader";
 
 export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+    <View style={{ height: "100%" }}>
+      <DefaultHeader title="ホーム" showSettingButton={true} />
+      <Authenticator.Provider>
+        <Authenticator>
+          <View style={styles.container}>
+            <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
+          </View>
+        </Authenticator>
+      </Authenticator.Provider>
     </View>
   );
 }
@@ -16,16 +27,17 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
 });
