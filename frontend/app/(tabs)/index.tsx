@@ -21,14 +21,13 @@ export default function TabOneScreen() {
   };
 
   return (
-    <Authenticator>
-      <View style={styles.container}>
-        <Text style={styles.title}>Tab One</Text>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <EditScreenInfo path="app/(tabs)/index.tsx" />
-        <Button title="Login" onPress={handleLogin} />
-      </View>
-    </Authenticator>
+    <Authenticator.Provider>
+      <Authenticator>
+        <View style={styles.container}>
+          <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
+        </View>
+      </Authenticator>
+    </Authenticator.Provider>
   );
 }
 
