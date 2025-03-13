@@ -1,23 +1,21 @@
 {
   "name": "backend",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
-    "build": "esbuild --bundle --outfile=./dist/index.js --platform=node --target=node20 ./src/index.ts",
-    "zip": "zip -j lambda.zip dist/index.js",
-    "update": "aws lambda update-function-code --zip-file fileb://lambda.zip --function-name hello",
-    "deploy": "run-s build zip update"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.22.0",
-    "esbuild": "^0.21.4",
-    "globals": "^16.0.0",
-    "npm-run-all2": "^6.2.0",
-    "typescript-eslint": "^8.26.1"
+    "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
+    "@hono/node-server": "^1.13.8",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "hono": "^4.7.4",
     "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@types/node": "^20.11.17",
+    "globals": "^16.0.0",
+    "tsx": "^4.7.1",
+    "typescript-eslint": "^8.26.1"
   }
 }

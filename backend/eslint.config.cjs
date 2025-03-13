@@ -1,7 +1,7 @@
 // eslint.config.js
-const eslint = require("@eslint/js");
-const tseslint = require("typescript-eslint");
-const prettier = require("eslint-config-prettier");
+const eslint = require('@eslint/js')
+const tseslint = require('typescript-eslint')
+const prettier = require('eslint-config-prettier')
 
 const eslintConfig = tseslint.config(
   eslint.configs.recommended,
@@ -15,7 +15,7 @@ const eslintConfig = tseslint.config(
         "error",
         { argsIgnorePattern: "^_" },
       ],
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": ["warn", { allow: ["warn", "error","info"] }],
     },
   },
   {
