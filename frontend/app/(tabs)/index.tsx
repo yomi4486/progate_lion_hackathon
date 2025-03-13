@@ -21,14 +21,16 @@ export default function TabOneScreen() {
   };
 
   return (
+    <View style={{height: "100%"}}>
+    <DefaultHeader title="ホーム" showSettingButton={true}/>
     <Authenticator.Provider>
       <Authenticator>
         <View style={styles.container}>
-          <DefaultHeader title="a" showSettingButton={true}/>
           <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
         </View>
       </Authenticator>
     </Authenticator.Provider>
+    </View>
   );
 }
 
@@ -37,6 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    height: "100%",
   },
   title: {
     fontSize: 20,
