@@ -1,7 +1,3 @@
-# prod
-dist/
-lambda.zip
-
 # dev
 .yarn/
 !.yarn/releases
