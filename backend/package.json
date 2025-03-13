@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "esbuild --bundle --outfile=./dist/index.js --platform=node --target=node20 ./src/index.ts",
     "zip": "zip -j lambda.zip dist/index.js",
