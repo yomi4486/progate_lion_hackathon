@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "esbuild --bundle --outfile=./dist/index.js --platform=node --target=node20 ./src/index.ts",
     "zip": "zip -j lambda.zip dist/index.js",
@@ -8,10 +8,16 @@
     "deploy": "run-s build zip update"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
     "esbuild": "^0.21.4",
-    "npm-run-all2": "^6.2.0"
+    "globals": "^16.0.0",
+    "npm-run-all2": "^6.2.0",
+    "typescript-eslint": "^8.26.1"
   },
   "dependencies": {
-    "hono": "^4.7.4"
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "hono": "^4.7.4",
+    "typescript": "^5.8.2"
   }
 }
