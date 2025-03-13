@@ -1,7 +1,7 @@
 // eslint.config.js
-import { eslint } from "@eslint/js";
-import { tseslint } from "typescript-eslint";
-import { prettier } from "eslint-config-prettier";
+const eslint = require('@eslint/js')
+const tseslint = require('typescript-eslint')
+const prettier = require('eslint-config-prettier')
 
 const eslintConfig = tseslint.config(
   eslint.configs.recommended,
