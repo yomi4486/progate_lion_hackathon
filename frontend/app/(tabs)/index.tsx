@@ -10,16 +10,6 @@ import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 
 export default function TabOneScreen() {
-  const router = useRouter();
-
-  const handleLogin = async () => {
-    try {
-      router.push("/home"); // Replace '/AnotherScreen' with your target screen path
-    } catch (error) {
-      console.info("Error signing in", error);
-    }
-  };
-
   return (
     <View style={{ height: "100%" }}>
       <DefaultHeader title="ホーム" showSettingButton={true} />
