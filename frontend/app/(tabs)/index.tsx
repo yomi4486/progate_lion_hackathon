@@ -1,25 +1,14 @@
 import { StyleSheet, Button } from "react-native";
-import { useRouter } from "expo-router";
-import { Authenticator } from "@aws-amplify/ui-react-native";
-import { Amplify } from "aws-amplify";
-import awsconfig from "../../src/aws-exports";
-
-Amplify.configure(awsconfig);
-
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
   return (
     <View style={{ height: "100%" }}>
       <DefaultHeader title="ホーム" showSettingButton={true} />
-      <Authenticator.Provider>
-        <Authenticator>
-          <View style={styles.container}>
-            <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
-          </View>
-        </Authenticator>
-      </Authenticator.Provider>
+      <View style={styles.container}>
+        <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
+      </View>
     </View>
   );
 }
