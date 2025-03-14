@@ -28,7 +28,7 @@ export default function TabLayout() {
         tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         tabBarStyle: {
           backgroundColor: "#222222", // タブの背景色を指定
-          height:90,
+          height: 90,
           paddingTop: 5,
         },
       }}
