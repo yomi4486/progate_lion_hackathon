@@ -5,3 +5,5 @@ ios:
 	@npx expo run:ios
 clean:
 	@pod cache clean --all && rm -rf ~/Library/Developer/Xcode/DerivedData/*
+release:
+	npx expo run:ios --device
