@@ -1,9 +1,4 @@
 import { StyleSheet, Button } from "react-native";
-import { Amplify } from "aws-amplify";
-import awsconfig from "../../src/aws-exports";
-
-Amplify.configure(awsconfig);
-
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 
