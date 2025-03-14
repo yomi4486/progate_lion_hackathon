@@ -8,6 +8,12 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 
+import { Authenticator } from "@aws-amplify/ui-react-native";
+import { Amplify } from "aws-amplify";
+import awsconfig from "../src/aws-exports";
+
+Amplify.configure(awsconfig);
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -49,11 +55,16 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <Authenticator.Provider>
+      <Authenticator>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </ThemeProvider>
+      </Authenticator>
+    </Authenticator.Provider>
+
   );
 }
