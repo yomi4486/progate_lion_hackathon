@@ -2,7 +2,7 @@ import { StyleSheet, Button } from "react-native";
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
   return (
     <View style={{ height: "100%" }}>
       <DefaultHeader title="ホーム" showSettingButton={true} />
