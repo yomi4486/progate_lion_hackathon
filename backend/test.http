@@ -1,0 +1,8 @@
+### JWT認証が必要な保護されたルートのテスト
+GET http://localhost:4000/protected
+Authorization: Bearer <ACCESS_TOKEN>
+
+### ログアウト処理のテスト
+POST http://localhost:4000/logout
+Authorization: Bearer <ACCESS_TOKEN>
+Content-Type: application/json
