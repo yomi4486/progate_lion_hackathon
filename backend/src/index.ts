@@ -13,22 +13,22 @@ const verifier = CognitoJwtVerifier.create({
 
 const app = new Hono().use("*", async (c, next) => {
   try {
-    const authHeader = c.req.header("Authorization")
+    const authHeader = c.req.header("Authorization");
     if (!authHeader) {
-      return c.json({ message: "Unauthorized" }, 401)
+      return c.json({ message: "Unauthorized" }, 401);
     }
-    const token = authHeader.split(" ")[1]
-    const payload = await verifier.verify(token)
+    const token = authHeader.split(" ")[1];
+    const payload = await verifier.verify(token);
     await next();
   } catch (e) {
-    console.error(e)
-    return c.json({ message: "Unauthorized" }, 401)
+    console.error(e);
+    return c.json({ message: "Unauthorized" }, 401);
   }
-})
+});
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");
-})
+});
 
 serve(
   {
