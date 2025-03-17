@@ -6,13 +6,11 @@ import * as authMiddlewares from "./controllers/middleware.js";
 
 dotenv.config();
 
-const app = new Hono();
-
-app.use("*", logger());
-app.use("*", authMiddlewares.verifyJWT);
-
-app.get("/", (c) => c.text("Hello, Hono!"));
-app.notFound((c) => c.text("Not Found", 404));
+const app = new Hono()
+  .use("*", logger())
+  .use("*", authMiddlewares.verifyJWT)
+  .get("/", (c) => c.text("Hello, Hono!"))
+  .notFound((c) => c.text("Not Found", 404));
 
 serve(
   {
