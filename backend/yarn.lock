@@ -377,6 +377,11 @@ argparse@^2.0.1:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-2.0.1.tgz#246f50f3ca78a3240f6c997e8a9bd1eac49e4b38"
   integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
 
+aws-jwt-verify@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/aws-jwt-verify/-/aws-jwt-verify-5.0.0.tgz#95a70a59dc8cc6c0e7155a8b6500bab4c82d52bc"
+  integrity sha512-FQM5EYEm7AnVJ3oeTpvBZQm7hYnpI067Em1oopHBs7cCNAcw8Aw8NFbojFjkNXifsOzyYe1ks+bg7Q9fMsTZSA==
+
 balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
