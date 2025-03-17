@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-console.log(process.env.USER_POOL_ID)
 const verifier = CognitoJwtVerifier.create({
   userPoolId: process.env.USERPOOL_ID as string,
   tokenUse: "access",
