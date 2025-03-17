@@ -21,8 +21,8 @@ const app = new Hono()
       const token = authHeader.split(' ')[1]
       const payload = await verifier.verify(token)
       await next()
-      console.log(payload)
     } catch(e) {
+        console.error(e)
         return c.json({ message: "Unauthorized" }, 401)
     }
   })
