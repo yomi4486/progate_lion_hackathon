@@ -1,9 +1,13 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
+import dotenv from "dotenv";
 
+dotenv.config();
+
+console.log(process.env.USER_POOL_ID)
 const verifier = CognitoJwtVerifier.create({
-  userPoolId: process.env.USER_POOL_ID as string,
+  userPoolId: process.env.USERPOOL_ID as string,
   tokenUse: "access",
   clientId: process.env.CLIENT_ID as string,
 })
@@ -11,11 +15,13 @@ const verifier = CognitoJwtVerifier.create({
 const app = new Hono()
   .use('*', async(c, next) => {
     try{
-      const token = c.req.header('Authorization')
-      if (!token) {
-        return c.json({message: "Token is required"}, 401)
+      const authHeader = c.req.header('Authorization')
+      if (!authHeader) {
+        return c.json({message: "Unauthorized"}, 401)
       }
+      const token = authHeader.split(' ')[1]
       const payload = await verifier.verify(token)
+      await next()
       console.log(payload)
     } catch(e) {
         return c.json({ message: "Unauthorized" }, 401)

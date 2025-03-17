@@ -7,6 +7,7 @@
   "dependencies": {
     "@hono/node-server": "^1.13.8",
     "aws-jwt-verify": "^5.0.0",
+    "dotenv": "^16.4.7",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "hono": "^4.7.4",
