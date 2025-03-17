@@ -24,9 +24,7 @@ const app = new Hono().use("*", async (c, next) => {
     console.error(e)
     return c.json({ message: "Unauthorized" }, 401)
   }
-})
-
-app.get("/", (c) => {
+}).get('/', (c) => {
   return c.text("Hello Hono!");
 })
 
