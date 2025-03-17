@@ -7,7 +7,7 @@ dotenv.config();
 
 const verifier = CognitoJwtVerifier.create({
   userPoolId: process.env.USERPOOL_ID as string,
-  tokenUse: "access",
+  tokenUse: "id",
   clientId: process.env.CLIENT_ID as string,
 });
 
