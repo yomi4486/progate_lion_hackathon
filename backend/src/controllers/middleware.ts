@@ -1,5 +1,8 @@
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import type { Context, Next } from "hono";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const verifier = CognitoJwtVerifier.create({
   userPoolId: process.env.USERPOOL_ID as string,
