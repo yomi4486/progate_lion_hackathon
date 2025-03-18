@@ -9,7 +9,7 @@ dotenv.config();
 
 const app = new Hono()
   .use("*", logger())
-  //.use("*", authMiddlewares.verifyJWT)
+  .use("*", authMiddlewares.verifyJWT)
   .get("/", (c) => c.text("Hello, Hono!"))
   .route("/users", UserRoute)
   .notFound((c) => c.text("Not Found", 404));
