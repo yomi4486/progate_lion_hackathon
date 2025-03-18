@@ -3,11 +3,8 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { uuid } from "uuidv4";
 import {
     DynamoDBDocument,
-    GetCommand,
     ScanCommand,
     PutCommand,
-    UpdateCommand,
-    DeleteCommand,
     QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { zValidator } from "@hono/zod-validator";
@@ -36,7 +33,7 @@ export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
         return c.json(response.Items);
     })
     // idがフォローしている人を取得
-    .get("/:id", async (c) => {
+    .get("/following/:id", async (c) => {
         const id = c.req.param("id");
         const queryCommand = new QueryCommand({
             TableName: tableName,
@@ -45,6 +42,23 @@ export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
                 ":user_id": id,
             },
         })
+        const response = await docClient.send(queryCommand);
+        if (!response.Items) {
+            return c.json({ message: "User not found" }, 404);
+        }
+        return c.json(response.Items);
+    })
+    //idのフォロワーを取得
+    .get(("followers/:id"), async (c) => {
+        const id = c.req.param("id");
+        const queryCommand = new QueryCommand({
+            TableName: tableName,
+            IndexName: "followee_id-index",
+            KeyConditionExpression: "followee_id = :followee_id",
+            ExpressionAttributeValues: {
+                ":followee_id": id,
+            },
+        });
         const response = await docClient.send(queryCommand);
         if (!response.Items) {
             return c.json({ message: "User not found" }, 404);
