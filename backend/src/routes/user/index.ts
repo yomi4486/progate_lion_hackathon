@@ -78,7 +78,7 @@ export const UserRoute = new Hono<{ Variables: { userId: string } }>()
     async (c) => {
       const body = c.req.valid("json");
       const updateExpression: string[] = [];
-      const expressionAttributeValues: Record<string, any> = {};
+      const expressionAttributeValues: Record<string, string> = {};
 
       if (body.display_name !== undefined) {
         updateExpression.push("display_name = :display_name");
