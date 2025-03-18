@@ -3,13 +3,15 @@ import { logger } from "hono/logger";
 import { Hono } from "hono";
 import dotenv from "dotenv";
 import * as authMiddlewares from "./controllers/middleware.js";
+import { UserRoute } from "./routes/user/index.js";
 
 dotenv.config();
 
-const app = new Hono()
+const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", logger())
   .use("*", authMiddlewares.verifyJWT)
   .get("/", (c) => c.text("Hello, Hono!"))
+  .route("/users", UserRoute)
   .notFound((c) => c.text("Not Found", 404));
 
 serve(

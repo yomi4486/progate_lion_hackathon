@@ -20,9 +20,7 @@ export const verifyJWT = async (c: Context, next: Next) => {
     const token = authHeader.split(" ")[1];
 
     const payload = await verifier.verify(token);
-
-    c.set("user", payload);
-
+    c.set("userId", payload.sub);
     await next();
   } catch (error) {
     console.error("JWT verification failed:", error);
