@@ -1,6 +1,9 @@
 import { z } from "zod";
 
 export const createRelationshipScheme = z.object({
-    id: z.string().uuid(),
-    followed_id: z.string(),
-})
+    followee_id: z.string(),
+});
+
+export const updateRelationshipScheme = z.object({
+    followee_id: z.string(),
+});

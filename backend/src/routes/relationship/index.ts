@@ -45,9 +45,8 @@ export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
             const putCommand = new PutCommand({
                 TableName: tableName,
                 Item: {
-                    id: uuid(),
-                    follower_id: c.get("userId"),
-                    followed_id: body.followed_id
+                    user_id: c.get("userId"),
+                    followee_id: body.followee_id
             },
             })
             const response = await docClient.send(putCommand);
