@@ -6,6 +6,7 @@ import {
   ScanCommand,
   PutCommand,
   UpdateCommand,
+  DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { zValidator } from "@hono/zod-validator";
 import dotenv from "dotenv";
@@ -108,4 +109,16 @@ export const UserRoute = new Hono<{ Variables: { userId: string } }>()
       const response = await docClient.send(updateCommand);
       return c.json(response);
     },
-  );
+  )
+  .delete("/",
+    async (c) => {
+        const deleteCommand = new DeleteCommand({
+            TableName: tableName,
+            Key: {
+            sub: c.get("userId"),
+            },
+        });
+        const response = await docClient.send(deleteCommand);
+        return c.json(response);
+    }
+  )
