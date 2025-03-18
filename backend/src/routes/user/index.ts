@@ -110,15 +110,13 @@ export const UserRoute = new Hono<{ Variables: { userId: string } }>()
       return c.json(response);
     },
   )
-  .delete("/",
-    async (c) => {
-        const deleteCommand = new DeleteCommand({
-            TableName: tableName,
-            Key: {
-            sub: c.get("userId"),
-            },
-        });
-        const response = await docClient.send(deleteCommand);
-        return c.json(response);
-    }
-  )
+  .delete("/", async (c) => {
+    const deleteCommand = new DeleteCommand({
+      TableName: tableName,
+      Key: {
+        sub: c.get("userId"),
+      },
+    });
+    const response = await docClient.send(deleteCommand);
+    return c.json(response);
+  });
