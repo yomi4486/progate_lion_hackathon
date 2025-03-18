@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import dotenv from "dotenv";
 import * as authMiddlewares from "./controllers/middleware.js";
 import { UserRoute } from "./routes/user/index.js";
+import { FollowRoute } from "./routes/follow/index.js";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", authMiddlewares.verifyJWT)
   .get("/", (c) => c.text("Hello, Hono!"))
   .route("/users", UserRoute)
+  .route("/follow", FollowRoute)
   .notFound((c) => c.text("Not Found", 404));
 
 serve(
