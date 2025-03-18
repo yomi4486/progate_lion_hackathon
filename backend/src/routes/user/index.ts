@@ -90,7 +90,7 @@ export const UserRoute = new Hono<{ Variables: { userId: string } }>()
       }
       if (body.description !== undefined) {
         updateExpression.push("description = :description");
-        expressionAttributeValues[":description"] = body.description
+        expressionAttributeValues[":description"] = body.description;
       }
 
       if (updateExpression.length === 0) {
