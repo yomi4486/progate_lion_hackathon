@@ -1,7 +1,9 @@
 import { Hono } from 'hono';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {  DynamoDBDocument, GetCommand, ScanCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { zValidator } from '@hono/zod-validator';
 import dotenv from 'dotenv';
+import { createUserScheme } from './scheme.js';
 
 dotenv.config();
 
@@ -23,14 +25,20 @@ export const UserRoute = new Hono()
         const response = await docClient.send(scanCommand);
         return c.json(response.Items);
     })
-    .post('/', async(c) => {
-        const body = await c.req.json()
+    .post('/', 
+        zValidator('json', createUserScheme, (result, c) => {
+            if (!result.success) {
+                return c.json({ message: "Invalid request" }, 400);
+            }
+        }),
+        async(c) => {
+        const body = c.req.valid('json');
         const putCommand = new PutCommand({
             TableName: tableName,
             Item: {
                 sub: body.sub
             }
-        })
+        });
         await docClient.send(putCommand);
         return c.json({ message: "User created" });
     })
