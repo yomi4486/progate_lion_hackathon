@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import {  DynamoDBDocument, GetCommand, ScanCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
+import {  DynamoDBDocument, GetCommand, ScanCommand, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { zValidator } from '@hono/zod-validator';
 import dotenv from 'dotenv';
-import { createUserScheme } from './scheme.js';
+import { createUserScheme, updateUserScheme } from './scheme.js';
 
 dotenv.config();
 
@@ -38,7 +38,7 @@ export const UserRoute = new Hono<{ Variables: { userId: string}}>()
         if (!response.Item) {
             return c.json({ message: "User not found" }, 404);
         }
-        return c.json({ user: response.Item }, 200);
+        return c.json(response.Item);
     })
     .post('/', 
         zValidator('json', createUserScheme, (result, c) => {
@@ -57,6 +57,29 @@ export const UserRoute = new Hono<{ Variables: { userId: string}}>()
                 description: body.description
             }
         });
-        await docClient.send(putCommand);
-        return c.json({ message: "User created" });
+        const response = await docClient.send(putCommand);
+        return c.json(response);
+    })
+    .put('/', 
+        zValidator('json', updateUserScheme, (result, c) => {
+            if (!result.success) {
+                return c.json({ message: "Invalid request" }, 400);
+            }
+        }),
+        async(c) => {
+            const body = c.req.valid('json');
+            const updateCommand = new UpdateCommand({
+            TableName: tableName,
+            Key: {
+                sub: c.get('userId')
+            },
+            UpdateExpression: 'SET display_name = :display_name, icon_uri = :icon_uri, description = :description',
+            ExpressionAttributeValues: {
+                ':display_name': body.display_name,
+                ':icon_uri': body.icon_uri,
+                ':description': body.description
+            },
+        });
+        const response = await docClient.send(updateCommand);
+        return c.json(response);
     })
