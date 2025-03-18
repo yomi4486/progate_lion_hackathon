@@ -77,18 +77,33 @@ export const UserRoute = new Hono<{ Variables: { userId: string } }>()
     }),
     async (c) => {
       const body = c.req.valid("json");
+      const updateExpression: string[] = [];
+      const expressionAttributeValues: Record<string, any> = {};
+
+      if (body.display_name !== undefined) {
+        updateExpression.push("display_name = :display_name");
+        expressionAttributeValues[":display_name"] = body.display_name;
+      }
+      if (body.icon_uri !== undefined) {
+        updateExpression.push("icon_uri = :icon_uri");
+        expressionAttributeValues[":icon_uri"] = body.icon_uri;
+      }
+      if (body.description !== undefined) {
+        updateExpression.push("description = :description");
+        expressionAttributeValues[":description"] = body.description
+      }
+
+      if (updateExpression.length === 0) {
+        return c.json({ message: "No update data" }, 400);
+      }
+
       const updateCommand = new UpdateCommand({
         TableName: tableName,
         Key: {
           sub: c.get("userId"),
         },
-        UpdateExpression:
-          "SET display_name = :display_name, icon_uri = :icon_uri, description = :description",
-        ExpressionAttributeValues: {
-          ":display_name": body.display_name,
-          ":icon_uri": body.icon_uri,
-          ":description": body.description,
-        },
+        UpdateExpression: `SET ${updateExpression.join(",")}`,
+        ExpressionAttributeValues: expressionAttributeValues,
       });
       const response = await docClient.send(updateCommand);
       return c.json(response);
