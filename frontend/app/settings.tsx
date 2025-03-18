@@ -1,9 +1,6 @@
 import { StyleSheet, Button, TouchableOpacity } from "react-native";
-import { Amplify } from "aws-amplify";
 import { signOut } from "aws-amplify/auth";
-import awsconfig from "../src/aws-exports";
-
-Amplify.configure(awsconfig);
+import { fetchAuthSession } from "aws-amplify/auth";
 
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "./components/DefaultHeader";
@@ -53,7 +50,11 @@ export default function TabOneScreen() {
             backgroundColor: "#FF555544",
             borderRadius: 10,
           }}
-          onPress={() => setModalVisible(true)}
+          onPress={async()=>{
+            // const session = await fetchAuthSession()
+            // console.log(session.tokens?.idToken?.toString())
+            setModalVisible(true)
+          }}
         >
           <Text style={styles.title}>ログアウト</Text>
         </TouchableOpacity>
