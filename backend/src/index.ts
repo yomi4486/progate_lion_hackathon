@@ -7,7 +7,7 @@ import { UserRoute } from "./routes/user/index.js";
 
 dotenv.config();
 
-const app = new Hono()
+const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", logger())
   .use("*", authMiddlewares.verifyJWT)
   .get("/", (c) => c.text("Hello, Hono!"))

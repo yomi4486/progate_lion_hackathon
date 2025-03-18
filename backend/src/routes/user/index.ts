@@ -14,10 +14,11 @@ const client = new DynamoDBClient({
         secretAccessKey: process.env.SECRET_ACCESS_KEY as string
     }
 })
+
 const docClient = DynamoDBDocument.from(client);
 const tableName = "users";
 
-export const UserRoute = new Hono()
+export const UserRoute = new Hono<{ Variables: { userId: string}}>()
     .get('/', async(c) => {
         const scanCommand = new ScanCommand({
             TableName: tableName,
@@ -25,18 +26,22 @@ export const UserRoute = new Hono()
         const response = await docClient.send(scanCommand);
         return c.json(response.Items);
     })
+    .get('/:sub', async(c) => {
+
+    })
     .post('/', 
+        /*
         zValidator('json', createUserScheme, (result, c) => {
             if (!result.success) {
                 return c.json({ message: "Invalid request" }, 400);
             }
         }),
+        */
         async(c) => {
-        const body = c.req.valid('json');
         const putCommand = new PutCommand({
             TableName: tableName,
             Item: {
-                sub: body.sub
+                sub: c.get('userId')
             }
         });
         await docClient.send(putCommand);
