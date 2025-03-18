@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import {  DynamoDBDocument, GetCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import {  DynamoDBDocument, GetCommand, ScanCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -22,4 +22,15 @@ export const UserRoute = new Hono()
         });
         const response = await docClient.send(scanCommand);
         return c.json(response.Items);
+    })
+    .post('/', async(c) => {
+        const body = await c.req.json()
+        const putCommand = new PutCommand({
+            TableName: tableName,
+            Item: {
+                sub: body.sub
+            }
+        })
+        await docClient.send(putCommand);
+        return c.json({ message: "User created" });
     })
