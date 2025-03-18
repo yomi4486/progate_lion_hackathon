@@ -20,7 +20,7 @@ export const verifyJWT = async (c: Context, next: Next) => {
     const token = authHeader.split(" ")[1];
 
     const payload = await verifier.verify(token);
-
+    console.log(payload)
     c.set("user", payload);
 
     await next();
