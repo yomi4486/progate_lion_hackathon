@@ -50,10 +50,10 @@ export default function TabOneScreen() {
             backgroundColor: "#FF555544",
             borderRadius: 10,
           }}
-          onPress={async()=>{
+          onPress={async () => {
             // const session = await fetchAuthSession()
             // console.log(session.tokens?.idToken?.toString())
-            setModalVisible(true)
+            setModalVisible(true);
           }}
         >
           <Text style={styles.title}>ログアウト</Text>
