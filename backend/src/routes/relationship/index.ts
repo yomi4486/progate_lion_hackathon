@@ -8,6 +8,7 @@ import {
     PutCommand,
     UpdateCommand,
     DeleteCommand,
+    QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { zValidator } from "@hono/zod-validator";
 import dotenv from "dotenv";
@@ -32,6 +33,22 @@ export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
             TableName: tableName,
         });
         const response = await docClient.send(scanCommand);
+        return c.json(response.Items);
+    })
+    // idがフォローしている人を取得
+    .get("/:id", async (c) => {
+        const id = c.req.param("id");
+        const queryCommand = new QueryCommand({
+            TableName: tableName,
+            KeyConditionExpression: "user_id = :user_id",
+            ExpressionAttributeValues: {
+                ":user_id": id,
+            },
+        })
+        const response = await docClient.send(queryCommand);
+        if (!response.Items) {
+            return c.json({ message: "User not found" }, 404);
+        }
         return c.json(response.Items);
     })
     .post("/",
