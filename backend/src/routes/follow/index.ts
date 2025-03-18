@@ -10,8 +10,8 @@ import {
 import { zValidator } from "@hono/zod-validator";
 import dotenv from "dotenv";
 import {
-  createRelationshipScheme,
-  deleteRelationshipScheme,
+  createFollowScheme,
+  deleteFollowScheme,
 } from "./scheme.js";
 
 dotenv.config();
@@ -27,7 +27,7 @@ const client = new DynamoDBClient({
 const docClient = DynamoDBDocument.from(client);
 const tableName = "relationships";
 
-export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
+export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
   .get("/", async (c) => {
     const scanCommand = new ScanCommand({
       TableName: tableName,
@@ -52,7 +52,7 @@ export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
     return c.json(response.Items);
   })
   //idのフォロワーを取得
-  .get("followers/:id", async (c) => {
+  .get("/followers/:id", async (c) => {
     const id = c.req.param("id");
     const queryCommand = new QueryCommand({
       TableName: tableName,
@@ -70,7 +70,7 @@ export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
   })
   .post(
     "/",
-    zValidator("json", createRelationshipScheme, (result, c) => {
+    zValidator("json", createFollowScheme, (result, c) => {
       if (!result.success) {
         return c.json({ message: "Invalid request" }, 400);
       }
@@ -90,7 +90,7 @@ export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
   )
   .delete(
     "/",
-    zValidator("json", deleteRelationshipScheme, (result, c) => {
+    zValidator("json", deleteFollowScheme, (result, c) => {
       if (!result.success) {
         return c.json({ message: "Invalid request" }, 400);
       }
