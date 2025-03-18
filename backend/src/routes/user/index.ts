@@ -26,22 +26,35 @@ export const UserRoute = new Hono<{ Variables: { userId: string}}>()
         const response = await docClient.send(scanCommand);
         return c.json(response.Items);
     })
-    .get('/:sub', async(c) => {
-
+    .get('/:id', async(c) => {
+        const id = c.get('userId');
+        const getCommnad = new GetCommand({
+            TableName: tableName,
+            Key: {
+                sub: id
+            }
+        });
+        const response = await docClient.send(getCommnad);
+        if (!response.Item) {
+            return c.json({ message: "User not found" }, 404);
+        }
+        return c.json({ user: response.Item }, 200);
     })
     .post('/', 
-        /*
         zValidator('json', createUserScheme, (result, c) => {
             if (!result.success) {
                 return c.json({ message: "Invalid request" }, 400);
             }
         }),
-        */
         async(c) => {
-        const putCommand = new PutCommand({
+            const body = c.req.valid('json');
+            const putCommand = new PutCommand({
             TableName: tableName,
             Item: {
-                sub: c.get('userId')
+                sub: c.get('userId'),
+                display_name: body.display_name,
+                icon_uri: body.icon_uri,
+                description: body.description
             }
         });
         await docClient.send(putCommand);
