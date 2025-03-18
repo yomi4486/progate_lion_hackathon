@@ -9,10 +9,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { zValidator } from "@hono/zod-validator";
 import dotenv from "dotenv";
-import {
-  createFollowScheme,
-  deleteFollowScheme,
-} from "./scheme.js";
+import { createFollowScheme, deleteFollowScheme } from "./scheme.js";
 
 dotenv.config();
 
