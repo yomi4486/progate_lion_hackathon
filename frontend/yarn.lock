@@ -6246,6 +6246,11 @@ hoist-non-react-statics@^3.3.2:
   dependencies:
     react-is "^16.7.0"
 
+hono@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.7.4.tgz#27294b29792242486ed83de3e9fc25c46768c372"
+  integrity sha512-Pst8FuGqz3L7tFF+u9Pu70eI0xa5S3LPUmrNd5Jm8nTHze9FxLTK9Kaj5g/k4UcwuJSXTP65SyHOPLrffpcAJg==
+
 hosted-git-info@^7.0.0:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-7.0.2.tgz#9b751acac097757667f30114607ef7b661ff4f17"
