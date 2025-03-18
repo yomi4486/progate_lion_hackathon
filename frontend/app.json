@@ -15,7 +15,11 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.progatelion.hackathon"
+      "bundleIdentifier": "com.progatelion.hackathon",
+      "infoPlist": {
+        "NSCameraUsageDescription": "AwesomeProject requires access to your phone’s camera.",
+        "NSMicrophoneUsageDescription": "AwesomeProject requires access to your phone’s Microphone."
+      }
     },
     "android": {
       "adaptiveIcon": {

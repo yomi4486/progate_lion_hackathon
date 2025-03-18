@@ -8,6 +8,9 @@ PODS:
     - ReactCommon/turbomodule/core
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
+  - EXAV (15.0.2):
+    - ExpoModulesCore
+    - ReactCommon/turbomodule/core
   - EXConstants (17.0.8):
     - ExpoModulesCore
   - Expo (52.0.38):
@@ -51,11 +54,16 @@ PODS:
     - ExpoModulesCore
   - ExpoSystemUI (4.0.8):
     - ExpoModulesCore
+  - ExpoVideo (2.0.6):
+    - ExpoModulesCore
   - ExpoWebBrowser (14.0.2):
     - ExpoModulesCore
   - FBLazyVector (0.76.7)
   - fmt (9.1.0)
   - glog (0.3.5)
+  - HaishinKit (1.2.7):
+    - Logboard (~> 2.2.2)
+  - Logboard (2.2.4)
   - RCT-Folly (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -1270,6 +1278,9 @@ PODS:
     - React-Core
   - react-native-netinfo (11.4.1):
     - React-Core
+  - react-native-rtmp-publisher (0.4.7):
+    - HaishinKit (~> 1.2.7)
+    - React-Core
   - react-native-safe-area-context (4.12.0):
     - DoubleConversion
     - glog
@@ -1767,6 +1778,7 @@ DEPENDENCIES:
   - "AmplifyRTNCore (from `../node_modules/@aws-amplify/react-native`)"
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
+  - EXAV (from `../node_modules/expo-av/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
@@ -1778,6 +1790,7 @@ DEPENDENCIES:
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
+  - ExpoVideo (from `../node_modules/expo-video/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
@@ -1816,6 +1829,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-rtmp-publisher (from `../node_modules/react-native-rtmp-publisher`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1851,6 +1865,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - HaishinKit
+    - Logboard
     - React-Codegen
     - SocketRocket
 
@@ -1861,6 +1877,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
+  EXAV:
+    :path: "../node_modules/expo-av/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   Expo:
@@ -1883,6 +1901,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-splash-screen/ios"
   ExpoSystemUI:
     :path: "../node_modules/expo-system-ui/ios"
+  ExpoVideo:
+    :path: "../node_modules/expo-video/ios"
   ExpoWebBrowser:
     :path: "../node_modules/expo-web-browser/ios"
   FBLazyVector:
@@ -1953,6 +1973,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-get-random-values"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-rtmp-publisher:
+    :path: "../node_modules/react-native-rtmp-publisher"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-nativeconfig:
@@ -2022,6 +2044,7 @@ SPEC CHECKSUMS:
   AmplifyRTNCore: 57da97471659dc80fc880c0b30af8d717effaa86
   boost: 1dca942403ed9342f98334bf4c3621f011aa7946
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
+  EXAV: 4c41f0a6ae54a0b96597abc90e37962ab2ee0d85
   EXConstants: fcfc75800824ac2d5c592b5bc74130bad17b146b
   Expo: a43b172755cb98c3ffe2a9485b16bba876d1b52f
   ExpoAsset: 4033893dfb333b444bf45e951351254137b658d5
@@ -2033,10 +2056,13 @@ SPEC CHECKSUMS:
   ExpoModulesCore: 64535b3e39254c6d401cea1720c1672752815bdf
   ExpoSplashScreen: 0f281e3c2ded4757d2309276c682d023c6299c77
   ExpoSystemUI: 2e5356d22b077c56c132b4dcbc5d69dd667b1f8c
+  ExpoVideo: 10e69b9c0652aba5c2edee2c572090e0412bd7ce
   ExpoWebBrowser: a212e6b480d8857d3e441fba51e0c968333803b3
   FBLazyVector: ca8044c9df513671c85167838b4188791b6f37e1
   fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
   glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
+  HaishinKit: 5463efd52fa4de2018db95547a5b09ce50495444
+  Logboard: 660364cbd45aa42fd79637f0cdfba3c950c613d8
   RCT-Folly: 84578c8756030547307e4572ab1947de1685c599
   RCTDeprecation: 7691283dd69fed46f6653d376de6fa83aaad774c
   RCTRequired: eac044a04629288f272ee6706e31f81f3a2b4bfe
@@ -2069,6 +2095,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 0224036b8cf8d2a8146df7fc0362b34d13cee400
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
+  react-native-rtmp-publisher: e78c306da289ea67cf11caa3005d698156fb077c
   react-native-safe-area-context: 2b12eb32e1faf3d212f8f93e55738de45ae78752
   React-nativeconfig: 67fa7a63ea288cb5b1d0dd2deaf240405fec164f
   React-NativeModulesApple: 016ebaab0efacb9ca8c760cb65b4a9a24ab3d007

@@ -5489,6 +5489,11 @@ expo-asset@~11.0.4:
     invariant "^2.2.4"
     md5-file "^3.2.3"
 
+expo-av@^15.0.2:
+  version "15.0.2"
+  resolved "https://registry.yarnpkg.com/expo-av/-/expo-av-15.0.2.tgz#65bb08658a7fe3a67aa47da614abbfae9adb684e"
+  integrity sha512-AHIHXdqLgK1dfHZF0JzX3YSVySGMrWn9QtPzaVjw54FAzvXfMt4sIoq4qRL/9XWCP9+ICcCs/u3EcvmxQjrfcA==
+
 expo-constants@~17.0.5, expo-constants@~17.0.7, expo-constants@~17.0.8:
   version "17.0.8"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-17.0.8.tgz#d7a21ec6f1f4834ea25aa645be20292ef99c0b81"
@@ -5593,6 +5598,11 @@ expo-system-ui@~4.0.8:
   dependencies:
     "@react-native/normalize-colors" "0.76.7"
     debug "^4.3.2"
+
+expo-video@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/expo-video/-/expo-video-2.0.6.tgz#4da4e4d427ad42649881a5336697b5a7164aaab3"
+  integrity sha512-oDorKwjreHT596oY6ZfktbDa3VF+Sq7gVsTbnQ4QVqGYL13mIO0s+h4y9xMyG/cDWyFpiRc4UT8KkPdxL0wViQ==
 
 expo-web-browser@~14.0.2:
   version "14.0.2"
@@ -9092,6 +9102,11 @@ react-native-reanimated@~3.16.1:
     "@babel/preset-typescript" "^7.16.7"
     convert-source-map "^2.0.0"
     invariant "^2.2.4"
+
+react-native-rtmp-publisher@^0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/react-native-rtmp-publisher/-/react-native-rtmp-publisher-0.4.7.tgz#771ce6172aed3e923bd5cf53d1756aecb95ad85d"
+  integrity sha512-sqc67p+pbJ9Gnc51GXfP4okm4vdWz+utsTfQvutVKa/ROG2lpUzo6jVvzniMNwp4GrZdCegHrl23ITmNfSyfzg==
 
 react-native-safe-area-context@4.12.0:
   version "4.12.0"

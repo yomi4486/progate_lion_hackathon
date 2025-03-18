@@ -1,6 +1,7 @@
 import { StyleSheet, Button } from "react-native";
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
+import VideoScreen from "../live/view";
 
 export default function HomeScreen() {
   return (
@@ -8,6 +9,7 @@ export default function HomeScreen() {
       <DefaultHeader title="ホーム" showSettingButton={true} />
       <View style={styles.container}>
         <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
+        <VideoScreen />
       </View>
     </View>
   );
