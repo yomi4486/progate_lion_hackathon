@@ -34,7 +34,7 @@ export const UserRoute = new Hono<{ Variables: { userId: string } }>()
     return c.json(response.Items);
   })
   .get("/:id", async (c) => {
-    const id = c.get("userId");
+    const id = c.req.param("id");
     const getCommnad = new GetCommand({
       TableName: tableName,
       Key: {
