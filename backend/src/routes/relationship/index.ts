@@ -1,15 +1,15 @@
 import { Hono } from "hono";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { uuid } from "uuidv4";
 import {
     DynamoDBDocument,
     ScanCommand,
     PutCommand,
     QueryCommand,
+    DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { zValidator } from "@hono/zod-validator";
 import dotenv from "dotenv";
-import { createRelationshipScheme } from "./scheme.js";
+import { createRelationshipScheme, deleteRelationshipScheme } from "./scheme.js";
 
 dotenv.config();
 
@@ -78,8 +78,27 @@ export const RelationshipRoute = new Hono<{ Variables: { userId: string } }>()
                 Item: {
                     user_id: c.get("userId"),
                     followee_id: body.followee_id
-            },
+                },
             })
             const response = await docClient.send(putCommand);
             return c.json(response);
-    })
+        })
+    .delete("/",
+        zValidator("json", deleteRelationshipScheme, (result, c) => {
+            if (!result.success) {
+                return c.json({ message: "Invalid request" }, 400);
+            }
+        }),
+        async (c) => {
+            const body = c.req.valid("json");
+            const deleteCommand = new DeleteCommand({
+                TableName: tableName,
+                Key: {
+                    user_id: c.get("userId"),
+                    followee_id: body.followee_id,
+                },
+            });
+            const response = await docClient.send(deleteCommand);
+            return c.json(response);
+        }
+    )
