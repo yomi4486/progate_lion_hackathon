@@ -1,6 +1,6 @@
-import {pool} from "../db.js";
-import type {User, UserFollow} from "../models/user.js";
-import type {ResultSetHeader, RowDataPacket} from "mysql2/promise";
+import { pool } from "../db.js";
+import type { User, UserFollow } from "../models/user.js";
+import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 /**
  * getUser
