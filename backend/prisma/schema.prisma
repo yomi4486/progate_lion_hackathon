@@ -18,14 +18,13 @@ model User {
   display_name String @db.VarChar(32)
   icon_uri String
   description String @db.VarChar(256)
-  following_id RelationShip[] @relation("following_relation")
-  followee_id RelationShip[] @relation("followee_relation")
+  following_id Follow[] @relation("following_relation")
+  followee_id Follow[] @relation("followee_relation")
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 
-model RelationShip {
-  id String @id
+model Follow {
   following_id String
   followee_id String
   following_user User @relation(name: "following_relation", fields: [following_id], references: [id])
