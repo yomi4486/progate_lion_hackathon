@@ -15,8 +15,8 @@ datasource db {
 
 model User {
   id String @id
-  dispaly_name String @db.VarChar(32)
-  icon_url String
+  display_name String @db.VarChar(32)
+  icon_uri String
   description String @db.VarChar(256)
   following_id RelationShip[] @relation("following_relation")
   followee_id RelationShip[] @relation("followee_relation")

@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { logger } from "hono/logger";
 import { Hono } from "hono";
 import dotenv from "dotenv";
-import * as authMiddlewares from "./controllers/middleware.js";
+import * as authMiddlewares from "./middleware.js";
 import { UserRoute } from "./routes/user/index.js";
 import { FollowRoute } from "./routes/follow/index.js";
 
