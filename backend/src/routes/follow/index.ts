@@ -50,7 +50,7 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
             description: true,
           },
         },
-      }
+      },
     });
     if (!result) {
       return c.json({ message: "User not found" }, 404);
