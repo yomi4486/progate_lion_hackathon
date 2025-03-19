@@ -1,0 +1,47 @@
+### ユーザー作成
+POST http://localhost:3000/users
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXItaWQiLCJpYXQiOjE3NDIzNDUwNTR9.tGfcmD3J68Fm3wSvEzurcPL3Oz7uizKO_fjjT8NPmIs
+
+{
+  "display_id": "test",
+  "display_name": "Test User",
+  "bio": "This is a test user",
+  "icon_url": "https://example.com/icon.jpg"
+}
+
+### ユーザー情報取得
+GET http://localhost:3000/users
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXItaWQiLCJpYXQiOjE3NDIzNDUwNTR9.tGfcmD3J68Fm3wSvEzurcPL3Oz7uizKO_fjjT8NPmIs
+
+### ユーザー情報更新
+PUT http://localhost:3000/users
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXItaWQiLCJpYXQiOjE3NDIzNDUwNTR9.tGfcmD3J68Fm3wSvEzurcPL3Oz7uizKO_fjjT8NPmIs
+
+{
+  "display_id": "test2",
+  "display_name": "Test User2",
+  "bio": "This is a test user",
+  "icon_url": "https://example.com/updated-icon.jpg"
+}
+
+### フォロー一覧取得
+GET http://localhost:3000/users/following
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXItaWQiLCJpYXQiOjE3NDIzNDUwNTR9.tGfcmD3J68Fm3wSvEzurcPL3Oz7uizKO_fjjT8NPmIs
+
+### フォロワー一覧取得
+GET http://localhost:3000/users/followers
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXItaWQiLCJpYXQiOjE3NDIzNDUwNTR9.tGfcmD3J68Fm3wSvEzurcPL3Oz7uizKO_fjjT8NPmIs
+
+### ユーザーをフォロー
+POST http://localhost:3000/follow/test3
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXItaWQiLCJpYXQiOjE3NDIzNDUwNTR9.tGfcmD3J68Fm3wSvEzurcPL3Oz7uizKO_fjjT8NPmIs
+
+### フォロー解除
+DELETE http://localhost:3000/following/test3
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXItaWQiLCJpYXQiOjE3NDIzNDUwNTR9.tGfcmD3J68Fm3wSvEzurcPL3Oz7uizKO_fjjT8NPmIs
+
+### フォロワーを削除
+DELETE http://localhost:3000/followers/test3
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0LXVzZXItaWQiLCJpYXQiOjE3NDIzNDUwNTR9.tGfcmD3J68Fm3wSvEzurcPL3Oz7uizKO_fjjT8NPmIs

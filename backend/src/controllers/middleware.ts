@@ -5,9 +5,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const verifier = CognitoJwtVerifier.create({
-  userPoolId: process.env.USERPOOL_ID as string,
+  userPoolId: process.env.COGNITO_USER_POOL_ID as string,
   tokenUse: "id",
-  clientId: process.env.CLIENT_ID as string,
+  clientId: process.env.COGNITO_APP_CLIENT_ID as string,
 });
 
 export const verifyJWT = async (c: Context, next: Next) => {
