@@ -48,6 +48,10 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
       const body = c.req.valid("json");
       const userId = c.get("userId");
 
+      if (userId === body.followee_id) {
+        return c.json({ message: "Cannot follow yourself" }, 400); 
+      }
+      
       const isExist = await prisma.follow.findUnique({
         where: {
           following_id_followee_id: {
