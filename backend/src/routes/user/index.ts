@@ -18,7 +18,7 @@ export const UserRoute = new Hono<{ Variables: { userId: string } }>()
     const result = await prisma.user.findUnique({
       where: {
         id: id,
-      }
+      },
     });
     if (!result) {
       return c.json({ message: "User not found" }, 404);
@@ -76,7 +76,7 @@ export const UserRoute = new Hono<{ Variables: { userId: string } }>()
       });
 
       return c.json(result);
-    }
+    },
   )
   .delete("/", async (c) => {
     const result = await prisma.user.delete({

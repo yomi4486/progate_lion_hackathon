@@ -49,16 +49,16 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
       const userId = c.get("userId");
 
       if (userId === body.followee_id) {
-        return c.json({ message: "Cannot follow yourself" }, 400); 
+        return c.json({ message: "Cannot follow yourself" }, 400);
       }
-      
+
       const isExist = await prisma.follow.findUnique({
         where: {
           following_id_followee_id: {
             following_id: userId,
             followee_id: body.followee_id,
-          }
-        }
+          },
+        },
       });
 
       if (isExist) {
@@ -73,9 +73,10 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
       });
 
       return c.json(result);
-    }
+    },
   )
-  .delete("/:id",
+  .delete(
+    "/:id",
     zValidator("json", deleteFollowScheme, (result, c) => {
       if (!result.success) {
         return c.json({ message: "Invalid request" }, 400);
@@ -90,8 +91,8 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
           following_id_followee_id: {
             following_id: userId,
             followee_id: id,
-          }
-        }
+          },
+        },
       });
 
       if (!isExist) {
@@ -103,9 +104,10 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
           following_id_followee_id: {
             following_id: userId,
             followee_id: id,
-          }
-        }
+          },
+        },
       });
 
       return c.json(result);
-    })
+    },
+  );
