@@ -19,6 +19,16 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
       where: {
         following_id: id,
       },
+      select: {
+        followee_id: true,
+        followee_user: {
+          select: {
+            display_name: true,
+            icon_uri: true,
+            description: true,
+          },
+        },
+      },
     });
     if (!result) {
       return c.json({ message: "User not found" }, 404);
@@ -31,6 +41,16 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
       where: {
         followee_id: id,
       },
+      select: {
+        following_id: true,
+        following_user: {
+          select: {
+            display_name: true,
+            icon_uri: true,
+            description: true,
+          },
+        },
+      }
     });
     if (!result) {
       return c.json({ message: "User not found" }, 404);
