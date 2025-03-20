@@ -5,3 +5,7 @@ export const createCommentScheme = z.object({
   video_position: z.number(),
   created_at: z.string().datetime(),
 });
+
+export const updateCommentScheme = z.object({
+    comment: z.string().max(256).optional(),
+})

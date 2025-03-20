@@ -3,13 +3,14 @@ import {
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
+  UpdateCommand,
   DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { config } from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { createCommentScheme } from "./scheme.js";
+import { createCommentScheme, updateCommentScheme } from "./scheme.js";
 
 config();
 
@@ -63,15 +64,89 @@ export const CommentRoute = new Hono<{ Variables: { userId: string } }>()
       return c.json(response);
     },
   )
-  .delete("/:roomId/:commentId", 
+  .put("/:roomId/:commentId",
+    zValidator("json", updateCommentScheme, (result, c) => {
+        if (!result.success) {
+            return c.json({ message: "Invalid request" }, 400);
+        }
+    }),
     async (c) => {
         const roomId = c.req.param("roomId");
         const commentId = c.req.param("commentId");
+        const userId = c.get("userId");
+        const body = c.req.valid("json");
+
+        const queryCommand = new QueryCommand({
+            TableName: tableName,
+            KeyConditionExpression: "room_id = :room_id AND comment_id = :comment_id",
+            FilterExpression: "user_id = :user_id",
+            ExpressionAttributeValues: {
+                ":room_id": roomId,
+                ":comment_id": commentId,
+                ":user_id": userId,
+            },
+        })
+
+        const queryResponse = await docClient.send(queryCommand);
+        if (queryResponse.Count === 0) {
+            return c.json({ message: "Comment not found" }, 404);
+        }
+
+        const updateExpression: string[] = [];
+        const expressionAttributeValues: Record<string, string> = {};
+        const expressionAttributeNames: Record<string, string> = {}; // 属性名のエイリアス
+        if (body.comment !== undefined) {
+            updateExpression.push("#comment = :comment");
+            expressionAttributeValues[":comment"] = body.comment;
+            expressionAttributeNames["#comment"] = "comment";
+        }
+        if (updateExpression.length === 0) {
+            return c.json({ message: "Invalid request" }, 400);
+        }
+        const updateCommand = new UpdateCommand({
+            TableName: tableName,
+            Key: {
+                room_id: roomId,
+                comment_id: commentId,
+            },
+            UpdateExpression: `SET ${updateExpression.join(",")}`,
+            ExpressionAttributeValues: expressionAttributeValues,
+            ExpressionAttributeNames: expressionAttributeNames,
+        })
+        const response = await docClient.send(updateCommand);
+        return c.json(response);
+    }
+  )
+
+  .delete("/:roomId/:commentId", 
+    async (c) => {
+        const userId = c.get("userId");
+        const roomId = c.req.param("roomId");
+        const commentId = c.req.param("commentId");
+
+        const queryCommand = new QueryCommand({
+            TableName: tableName,
+            KeyConditionExpression: "room_id = :room_id AND comment_id = :comment_id",
+            FilterExpression: "user_id = :user_id",
+            ExpressionAttributeValues: {
+                ":room_id": roomId,
+                ":comment_id": commentId,
+                ":user_id": userId,
+            },
+        })
+        
+        const queryResponse = await docClient.send(queryCommand);
+
+        if (queryResponse.Count === 0) {
+            return c.json({ message: "Comment not found" }, 404);
+        }
+
         const deleteCommand = new DeleteCommand({
             TableName: tableName,
             Key: {
                 room_id: roomId,
                 comment_id: commentId,
+                user_id: c.get("userId"),
             },
         })
         const response = await docClient.send(deleteCommand);
