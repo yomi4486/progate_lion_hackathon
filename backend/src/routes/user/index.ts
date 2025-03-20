@@ -7,7 +7,12 @@ const prisma = new PrismaClient();
 
 export const UserRoute = new Hono<{ Variables: { userId: string } }>()
   .get("/", async (c) => {
-    const result = await prisma.user.findMany();
+    const userId = c.get("userId");
+    const result = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      }
+    });
     if (!result) {
       return c.json({ message: "User not found" }, 404);
     }
