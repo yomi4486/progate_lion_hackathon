@@ -2,7 +2,8 @@ import { StyleSheet, Button, TouchableOpacity,Modal,Animated,TouchableWithoutFee
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 import { useRouter } from "expo-router";
-import * as RoomUtils from '@/app/lib/room'
+import * as RoomUtils from '@/app/lib/room';
+import * as UserUtils from '@/app/lib/user';
 import FloatingActionButton from "../components/floatActionButton";
 import { fetchAuthSession } from "aws-amplify/auth";
 
@@ -14,10 +15,12 @@ export default function HomeScreen() {
         <View style={styles.container}>
           <TouchableOpacity onPress={async()=>{
             const session = await fetchAuthSession()
-            const res = await RoomUtils.get_room(session.tokens?.idToken?.toString()!)
+            console.log("OK")
+            const res = await RoomUtils.get_room(session.tokens?.idToken?.toString()!)    
             console.log(res)
+
           }}>
-          <Text style={styles.title}>ルームの作成!</Text>
+          <Text style={styles.title}>ルームの作成!!</Text>
           </TouchableOpacity>
         </View>
       </View>
