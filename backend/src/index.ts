@@ -11,7 +11,7 @@ config();
 
 const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", logger())
-  .use("*", async(c, next) => {
+  .use("*", async (c, next) => {
     const authHeader = c.req.header("Authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return c.json({ message: "Unauthorized" }, 401);
@@ -42,6 +42,6 @@ export const server = serve(
 
 export const closeServer = () => {
   server.close();
-}
+};
 export type AppType = typeof app;
 export default app;
