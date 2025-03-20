@@ -7,9 +7,9 @@ export async function get_room(
   idToken: string,
 ): Promise<InferResponseType<typeof client.room.$post, 200> | null> {
   try {
-    const res = await client.room.$post(
-        {headers: {Authorization: `Bearer ${idToken}`}},
-    );
+    const res = await client.room.$post({
+      headers: { Authorization: `Bearer ${idToken}` },
+    });
     console.log(res);
     if (!res.ok) return null;
     const jsonContent = await res.json();
