@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { config } from 'dotenv';
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
@@ -20,7 +20,16 @@ const tableName = "comments";
 
 export const CommentRoute = new Hono<{ Variables: { userId: string } }>()
     .get("/:roomId", async (c) => {
-        
+        const roomId = c.req.param("roomId");
+        const queryCommand = new QueryCommand({
+            TableName: tableName,
+            KeyConditionExpression: "room_id = :room_id",
+            ExpressionAttributeValues: {
+                ":room_id": roomId
+            }
+        })
+        const response = await docClient.send(queryCommand);
+        return c.json({ comments: response.Items})
     })
     .post("/:roomId",
         zValidator("json", createCommentScheme, (result, c) => {
