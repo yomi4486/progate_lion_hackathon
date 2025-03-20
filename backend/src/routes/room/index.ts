@@ -2,12 +2,31 @@ import { Hono } from "hono";
 import { AccessToken, RoomServiceClient } from "livekit-server-sdk"
 import { uuid } from "uuidv4"
 import dotenv from "dotenv";
+import { zValidator } from "@hono/zod-validator";
+import { createTokenScheme } from "./scheme.js";
 
 dotenv.config();
 
 const livekitHost = "https://progatehackathon-0vilmkur.livekit.cloud";
 const roomService = new RoomServiceClient(livekitHost, process.env.LIVEKIT_API_KEY, process.env.LIVEKIT_API_SECRET);
-const RoomRoute = new Hono<{ Variables: { userId: string } }>()
+export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
+    .post("/token", 
+        zValidator("json", createTokenScheme, (result, c) => {
+            if (!result.success) {
+                return c.json({ message: "Invalid request" }, 400);
+            }
+        }
+    ),
+        async (c) => {
+        const userId = c.get("userId");
+        const roomName = c.req.valid("json").roomName;
+        const at = new AccessToken(process.env.LIVEKIT_API_KEY, process.env.LIVEKIT_API_SECRET, {
+            identity: userId,
+            ttl: '10m',
+          });
+        at.addGrant({ roomJoin: true, room: roomName });
+        return c.json({ token: at.toJwt() });
+    })
     .post("/",
         async (c) => {
             try {

@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import * as authMiddlewares from "./middleware.js";
 import { UserRoute } from "./routes/user/index.js";
 import { FollowRoute } from "./routes/follow/index.js";
+import { RoomRoute } from "./routes/room/index.js";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const app = new Hono<{ Variables: { userId: string } }>()
   .get("/", (c) => c.text("Hello, Hono!"))
   .route("/users", UserRoute)
   .route("/follow", FollowRoute)
+  .route("/room", RoomRoute)
   .notFound((c) => c.text("Not Found", 404));
 
 serve(
