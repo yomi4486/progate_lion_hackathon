@@ -66,7 +66,7 @@ const RoomView = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <FlatList
         data={tracks}
         renderItem={renderTrack}
@@ -78,10 +78,10 @@ const RoomView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'stretch',
-    justifyContent: 'center',
+    aspectRatio: 1,
   },
   participantView: {
-    height: 300,
+    flex: 1,
+    aspectRatio: .5,
   },
 });
