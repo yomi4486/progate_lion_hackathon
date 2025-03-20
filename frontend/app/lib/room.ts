@@ -8,8 +8,8 @@ export async function get_room(
 ): Promise<InferResponseType<typeof client.room.$post, 200> | null> {
   try {
     const res = await client.room.$post(
-        {},
-        {headers: {Authorization: `Bearer ${idToken}`}},
+      {},
+      { headers: { Authorization: `Bearer ${idToken}` } },
     );
     console.log(res);
     if (!res.ok) return null;

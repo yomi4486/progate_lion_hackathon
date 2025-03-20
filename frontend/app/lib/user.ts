@@ -10,9 +10,12 @@ export async function get(
   idToken: string,
 ): Promise<InferResponseType<typeof getFromId.$get, 200> | null> {
   try {
-    const res = await client.users[":id"].$get({
-      param: { id: id },
-    },{headers: {Authorization: `Bearer ${idToken}`}});
+    const res = await client.users[":id"].$get(
+      {
+        param: { id: id },
+      },
+      { headers: { Authorization: `Bearer ${idToken}` } },
+    );
     if (!res.ok) return null;
     const jsonContent = await res.json();
     return jsonContent;
@@ -26,9 +29,12 @@ export async function getMyProfile(
   token: string,
 ): Promise<InferResponseType<typeof client.users.$get, 200> | null> {
   try {
-    const res = await client.users.$get({},{
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await client.users.$get(
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     if (!res.ok) return null;
     const jsonContent = await res.json();
     return jsonContent;

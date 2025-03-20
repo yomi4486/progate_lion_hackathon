@@ -1,4 +1,11 @@
-import { StyleSheet, Button, TouchableOpacity,Modal,Animated,TouchableWithoutFeedback } from "react-native";
+import {
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  Modal,
+  Animated,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 import { useRouter } from "expo-router";
@@ -10,12 +17,14 @@ export default function HomeScreen() {
     <View style={{ height: "100%" }}>
       <DefaultHeader title="ホーム" showSettingButton={true} />
       <View style={styles.container}>
-        <TouchableOpacity onPress={()=>{
-          navigate.navigate("/room")
-        }}>
-        <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigate.navigate("/room");
+          }}
+        >
+          <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
         </TouchableOpacity>
-        <FloatingActionButton onPress={()=> navigate.navigate("/new")}/>
+        <FloatingActionButton onPress={() => navigate.navigate("/new")} />
       </View>
     </View>
   );
