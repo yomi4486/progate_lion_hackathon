@@ -15,6 +15,6 @@ export const verifyJWT = async (token: string): Promise<string | null> => {
     return payload.sub;
   } catch (error) {
     console.error("JWT verification failed:", error);
-    return null
+    return null;
   }
 };
