@@ -3,8 +3,10 @@ import {
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
+  DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { config } from "dotenv";
+import { v4 as uuidv4 } from "uuid";
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { createCommentScheme } from "./scheme.js";
@@ -51,6 +53,7 @@ export const CommentRoute = new Hono<{ Variables: { userId: string } }>()
         Item: {
           room_id: roomId,
           user_id: userId,
+          comment_id: uuidv4(),
           comment: body.comment,
           created_at: new Date().toISOString(),
           video_position: body.video_position,
@@ -59,4 +62,19 @@ export const CommentRoute = new Hono<{ Variables: { userId: string } }>()
       const response = await docClient.send(putCommand);
       return c.json(response);
     },
-  );
+  )
+  .delete("/:roomId/:commentId", 
+    async (c) => {
+        const roomId = c.req.param("roomId");
+        const commentId = c.req.param("commentId");
+        const deleteCommand = new DeleteCommand({
+            TableName: tableName,
+            Key: {
+                room_id: roomId,
+                comment_id: commentId,
+            },
+        })
+        const response = await docClient.send(deleteCommand);
+        return c.json(response);
+    }
+  )
