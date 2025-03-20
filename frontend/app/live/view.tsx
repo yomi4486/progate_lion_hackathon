@@ -8,7 +8,5 @@ const videoSource =
 export default function VideoScreen() {
   const ref = useRef<VideoView>(null);
 
-  return (
-      <VideoPlayer source={videoSource} videoRef={ref} />
-  );
+  return <VideoPlayer source={videoSource} videoRef={ref} />;
 }
