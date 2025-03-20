@@ -32,9 +32,23 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
     })
     .post("/",
         async (c) => {
+            const userId = c.get("userId")
+            const id = uuid();
+
+            const result = await prisma.room.create({
+                data: {
+                    room_id: id,
+                    room_owner_id: userId
+                }
+            })
+            
+            if (!result) {
+                return c.json({ message: "Failed to create room" }, 500)
+            }
+
             try {
                 const room = await roomService.createRoom({
-                    name: uuid(),
+                    name: id,
                     emptyTimeout: 10 * 60, // 10 minutes
                     maxParticipants: 100,
                 })
@@ -47,6 +61,26 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
     )
     .delete("/:id", async (c) => {
         const roomId = c.req.param("id")
+        const userId = c.get("userId")
+
+        const result = await prisma.room.findUnique({
+            where: {
+                room_id: roomId,
+                room_owner_id: userId
+            }
+        })
+
+        if (!result) {
+            return c.json({ message: "Room not found" }, 404)
+        }
+
+        prisma.room.delete({
+            where: {
+                room_id: roomId,
+                room_owner_id: userId
+            }
+        })
+
         try {
             await roomService.deleteRoom(roomId)
         } catch (e) {

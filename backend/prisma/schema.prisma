@@ -18,8 +18,12 @@ model User {
   display_name String @db.VarChar(32)
   icon_uri String
   description String @db.VarChar(256)
+
   following_id Follow[] @relation("following_relation")
   followee_id Follow[] @relation("followee_relation")
+
+  created_rooms Room[]
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
@@ -33,6 +37,14 @@ model Follow {
   updated_at DateTime @updatedAt
   
   @@unique([following_id, followee_id])
+}
+
+model Room {
+  room_id String @id
+  room_owner_id String
+  created_user User @relation(fields: [room_owner_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 /*
