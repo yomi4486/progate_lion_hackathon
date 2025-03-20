@@ -1,69 +1,61 @@
 import { Hono } from "hono";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  DynamoDBDocument,
-  ScanCommand,
-  PutCommand,
-  QueryCommand,
-  DeleteCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { PrismaClient } from "@prisma/client";
 import { zValidator } from "@hono/zod-validator";
-import dotenv from "dotenv";
 import { createFollowScheme, deleteFollowScheme } from "./scheme.js";
 
-dotenv.config();
-
-const client = new DynamoDBClient({
-  region: process.env.REGION,
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY as string,
-  },
-});
-
-const docClient = DynamoDBDocument.from(client);
-const tableName = "relationships";
+const prisma = new PrismaClient();
 
 export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
   .get("/", async (c) => {
-    const scanCommand = new ScanCommand({
-      TableName: tableName,
-    });
-    const response = await docClient.send(scanCommand);
-    return c.json(response.Items);
+    const result = await prisma.follow.findMany();
+    if (!result) {
+      return c.json({ message: "User not found" }, 404);
+    }
+    return c.json(result);
   })
-  // idがフォローしている人を取得
   .get("/following/:id", async (c) => {
     const id = c.req.param("id");
-    const queryCommand = new QueryCommand({
-      TableName: tableName,
-      KeyConditionExpression: "user_id = :user_id",
-      ExpressionAttributeValues: {
-        ":user_id": id,
+    const result = await prisma.follow.findMany({
+      where: {
+        following_id: id,
+      },
+      select: {
+        followee_id: true,
+        followee_user: {
+          select: {
+            display_name: true,
+            icon_uri: true,
+            description: true,
+          },
+        },
       },
     });
-    const response = await docClient.send(queryCommand);
-    if (!response.Items) {
+    if (!result) {
       return c.json({ message: "User not found" }, 404);
     }
-    return c.json(response.Items);
+    return c.json(result);
   })
-  //idのフォロワーを取得
   .get("/followers/:id", async (c) => {
     const id = c.req.param("id");
-    const queryCommand = new QueryCommand({
-      TableName: tableName,
-      IndexName: "followee_id-index",
-      KeyConditionExpression: "followee_id = :followee_id",
-      ExpressionAttributeValues: {
-        ":followee_id": id,
+    const result = await prisma.follow.findMany({
+      where: {
+        followee_id: id,
+      },
+      select: {
+        following_id: true,
+        following_user: {
+          select: {
+            display_name: true,
+            icon_uri: true,
+            description: true,
+          },
+        },
       },
     });
-    const response = await docClient.send(queryCommand);
-    if (!response.Items) {
+    if (!result) {
       return c.json({ message: "User not found" }, 404);
     }
-    return c.json(response.Items);
+    return c.json(result);
   })
   .post(
     "/",
@@ -74,34 +66,68 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
     }),
     async (c) => {
       const body = c.req.valid("json");
-      const putCommand = new PutCommand({
-        TableName: tableName,
-        Item: {
-          user_id: c.get("userId"),
+      const userId = c.get("userId");
+
+      if (userId === body.followee_id) {
+        return c.json({ message: "Cannot follow yourself" }, 400);
+      }
+
+      const isExist = await prisma.follow.findUnique({
+        where: {
+          following_id_followee_id: {
+            following_id: userId,
+            followee_id: body.followee_id,
+          },
+        },
+      });
+
+      if (isExist) {
+        return c.json({ message: "Already following" }, 409);
+      }
+
+      const result = await prisma.follow.create({
+        data: {
+          following_id: userId,
           followee_id: body.followee_id,
         },
       });
-      const response = await docClient.send(putCommand);
-      return c.json(response);
+
+      return c.json(result);
     },
   )
   .delete(
-    "/",
+    "/:id",
     zValidator("json", deleteFollowScheme, (result, c) => {
       if (!result.success) {
         return c.json({ message: "Invalid request" }, 400);
       }
     }),
     async (c) => {
-      const body = c.req.valid("json");
-      const deleteCommand = new DeleteCommand({
-        TableName: tableName,
-        Key: {
-          user_id: c.get("userId"),
-          followee_id: body.followee_id,
+      const id = c.req.param("id");
+      const userId = c.get("userId");
+
+      const isExist = await prisma.follow.findUnique({
+        where: {
+          following_id_followee_id: {
+            following_id: userId,
+            followee_id: id,
+          },
         },
       });
-      const response = await docClient.send(deleteCommand);
-      return c.json(response);
+
+      if (!isExist) {
+        return c.json({ message: "Not following" }, 409);
+      }
+
+      const result = await prisma.follow.delete({
+        where: {
+          following_id_followee_id: {
+            following_id: userId,
+            followee_id: id,
+          },
+        },
+      });
+
+      return c.json(result);
     },
   );
