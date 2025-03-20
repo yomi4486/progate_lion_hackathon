@@ -36,9 +36,21 @@ describe("UserRoute API", () => {
   afterAll(async () => {
     jest.restoreAllMocks();
     closeServer();
-    await prisma.user.delete({
+  
+    await prisma.follow.deleteMany({
       where: {
-        id: "validuser1",
+        OR: [
+          { following_id: "validuser1" },
+          { followee_id: "validuser1" },
+        ],
+      },
+    });
+  
+    await prisma.user.deleteMany({
+      where: {
+        id: {
+          in: ["validuser1", "validuser2"],
+        },
       },
     });
   });
