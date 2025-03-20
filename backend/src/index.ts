@@ -12,7 +12,12 @@ config();
 const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", logger())
   .use("*", async(c, next) => {
-    const result = await verifyJWT(c);
+    const authHeader = c.req.header("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+    const token = authHeader.split(" ")[1];
+    const result = await verifyJWT(token);
     if (result === null) {
       return c.json({ message: "Unauthorized" }, 401);
     }
@@ -25,7 +30,7 @@ const app = new Hono<{ Variables: { userId: string } }>()
   .route("/room", RoomRoute)
   .notFound((c) => c.text("Not Found", 404));
 
-serve(
+export const server = serve(
   {
     fetch: app.fetch,
     port: 3000,
@@ -35,5 +40,8 @@ serve(
   },
 );
 
+export const closeServer = () => {
+  server.close();
+}
 export type AppType = typeof app;
 export default app;

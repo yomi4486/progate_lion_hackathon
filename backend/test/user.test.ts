@@ -1,31 +1,39 @@
-import { it, expect, describe, beforeAll, jest } from '@jest/globals';
+import { it, expect, describe, beforeAll, afterAll, jest } from '@jest/globals';
+import { closeServer } from '../src/index.js';
+import { spyOn } from 'jest-mock';
 import * as authMiddleware from '../src/middleware.js';
-import type { Context } from "hono";
-import { testClient } from "hono/testing";
+import { testClient } from 'hono/testing';
 import app from '../src/index.js';
 
 const client = testClient(app);
+let server;
 
 // verifyJWTをモック化
 describe("UserRoute API", () => {
   beforeAll(() => {
-    jest.spyOn(authMiddleware, 'verifyJWT').mockImplementation(async (c: Context) => {
-      const authHeader = c.req.header("Authorization");
-      if (authHeader === "Bearer validtoken1") {
+    spyOn(authMiddleware, 'verifyJWT').mockImplementation(async (token: string) => {
+      if (token === "validtoken1") {
         return "validuser1";
-      } else if (authHeader === "Bearer validtoken2") {
+      } else if (token === "validtoken2") {
         return "validuser2";
       }
       return null;
     });
   });
 
-  it("should return validuser1 for validtoken1", async () => {
-    const res = await client.users.$get({
-        headers: {
-            Authorization: "Bearer validtoken1"
-        }
-    })
+  afterAll(() => {
+    jest.restoreAllMocks();
+    closeServer();
+  })
+
+  it("should return status 200 when token is valid", async () => {
+    // テスト用のリクエストを送信
+    const res = await client.users.$get("/", {
+      headers: {
+        Authorization: "Bearer validtoken1",
+      },
+    });
+
     expect(res.status).toBe(200);
   });
 });
