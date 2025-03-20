@@ -4,11 +4,14 @@ import { uuid } from "uuidv4"
 import dotenv from "dotenv";
 import { zValidator } from "@hono/zod-validator";
 import { createTokenScheme } from "./scheme.js";
+import { PrismaClient } from "@prisma/client";
 
 dotenv.config();
 
 const livekitHost = "https://progatehackathon-0vilmkur.livekit.cloud";
 const roomService = new RoomServiceClient(livekitHost, process.env.LIVEKIT_API_KEY, process.env.LIVEKIT_API_SECRET);
+const prisma = new PrismaClient();
+
 export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
     .post("/token", 
         zValidator("json", createTokenScheme, (result, c) => {
