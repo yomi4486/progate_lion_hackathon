@@ -2,18 +2,27 @@ import { serve } from "@hono/node-server";
 import { logger } from "hono/logger";
 import { Hono } from "hono";
 import dotenv from "dotenv";
-import * as authMiddlewares from "./middleware.js";
+import { verifyJWT } from "./middleware.js";
 import { UserRoute } from "./routes/user/index.js";
 import { FollowRoute } from "./routes/follow/index.js";
+import { RoomRoute } from "./routes/room/index.js";
 
 dotenv.config();
 
 const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", logger())
-  .use("*", authMiddlewares.verifyJWT)
+  .use("*", async (c, next) => {
+    const result = await verifyJWT(c);
+    if (result === null) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+    c.set("userId", result);
+    await next();
+  })
   .get("/", (c) => c.text("Hello, Hono!"))
   .route("/users", UserRoute)
   .route("/follow", FollowRoute)
+  .route("/room", RoomRoute)
   .notFound((c) => c.text("Not Found", 404));
 
 serve(
