@@ -11,7 +11,7 @@ dotenv.config();
 
 const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", logger())
-  .use("*", async(c, next) => {
+  .use("*", async (c, next) => {
     const result = await verifyJWT(c);
     if (result === null) {
       return c.json({ message: "Unauthorized" }, 401);

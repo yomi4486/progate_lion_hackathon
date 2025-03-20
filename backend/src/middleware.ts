@@ -23,6 +23,6 @@ export const verifyJWT = async (c: Context): Promise<string | null> => {
     return payload.sub;
   } catch (error) {
     console.error("JWT verification failed:", error);
-    return null
+    return null;
   }
 };
