@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { AccessToken, RoomServiceClient } from "livekit-server-sdk"
-import { uuid } from "uuidv4"
+import { AccessToken, RoomServiceClient } from "livekit-server-sdk";
+import { uuid } from "uuidv4";
 import dotenv from "dotenv";
 import { zValidator } from "@hono/zod-validator";
 import { createTokenScheme } from "./scheme.js";
