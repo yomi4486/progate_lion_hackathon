@@ -2,8 +2,10 @@ import {
   StyleSheet,
   Button,
   TouchableOpacity,
+  TextInput,
   Modal,
   Animated,
+  Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
@@ -13,27 +15,49 @@ import * as RoomUtils from "@/app/lib/room";
 import * as UserUtils from "@/app/lib/user";
 import FloatingActionButton from "../components/floatActionButton";
 import { fetchAuthSession } from "aws-amplify/auth";
+import { useState } from "react";
 
 export default function NewUserScreen() {
   const navigate = useRouter();
+  const [displayName, setDisplayName] = useState("");
+  const [description, setDescription] = useState("");
   return (
-    <View style={{ height: "100%" }}>
-      <DefaultHeader title="新規ユーザー作成" showSettingButton={true} />
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={async () => {
-            const session = await fetchAuthSession();
-            console.log("OK");
-            const res = await RoomUtils.get_room(
-              session.tokens?.idToken?.toString()!,
-            );
-            console.log(res);
-          }}
-        >
-          <Text style={styles.title}>ルームの作成!!</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <TouchableWithoutFeedback
+			onPress={() => {
+				Keyboard.dismiss()
+			}}
+	>
+        <View style={{ height: "100%" }}>
+        <DefaultHeader title="新規ユーザー作成" showSettingButton={true} />
+        <View style={styles.container}>
+            <Text style={{textAlign:"left",width:"80%",fontWeight:"bold",fontSize:20,paddingBottom:5}}>名前</Text>
+            <TextInput onChangeText={(t)=>{setDisplayName(t)}} style={{height:40,width:"80%",borderColor:"brack",borderWidth:.5,borderRadius:3}} />
+            <Text style={{textAlign:"left",width:"80%",fontWeight:"bold",fontSize:20,paddingBottom:5}}>自己紹介</Text>
+            <TextInput onChangeText={(t)=>{setDescription(t)}} style={{height:40,width:"80%",borderColor:"brack",borderWidth:.5,borderRadius:3}} />
+            <TouchableOpacity
+            onPress={async () => {
+                const session = await fetchAuthSession();
+                console.log("OK");
+                const res = await UserUtils.setMyProfile(
+                session.tokens?.idToken?.toString()!,
+                displayName,
+                "",
+                description
+                );
+                console.log(res);
+                if(res){
+                    navigate.navigate("/");
+                }
+            }}
+            style={{alignContent:"flex-end",alignItems:"flex-end",width:"80%"}}
+            >
+            <View style={{backgroundColor:"#55FF5555",borderRadius:10,padding:10,width:"40%",marginTop:10}}>
+                <Text style={styles.title}>作成</Text>
+            </View>
+            </TouchableOpacity>
+        </View>
+        </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -43,10 +67,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: "100%",
+    width:"100%",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
+    textAlign:"center"
   },
   separator: {
     marginVertical: 30,
