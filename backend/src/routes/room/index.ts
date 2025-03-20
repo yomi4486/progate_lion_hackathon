@@ -81,7 +81,7 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       return c.json({ message: "Room not found" }, 404);
     }
 
-    prisma.room.delete({
+    await prisma.room.delete({
       where: {
         room_id: roomId,
         room_owner_id: userId,
