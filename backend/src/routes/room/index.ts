@@ -1,9 +1,7 @@
 import { Hono } from "hono";
 import { AccessToken, RoomServiceClient } from "livekit-server-sdk";
-import { uuid } from "uuidv4";
+import { v4 as uuidv4 } from "uuid";
 import { config } from "dotenv";
-import { zValidator } from "@hono/zod-validator";
-import { createTokenScheme } from "./scheme.js";
 import { PrismaClient } from "@prisma/client";
 
 config();
@@ -32,8 +30,8 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
     }
 
     const at = new AccessToken(
-      process.env.LIVEKIT_API_KEY,
-      process.env.LIVEKIT_API_SECRET,
+      process.env.LIVEKIT_API_KEY as string,
+      process.env.LIVEKIT_API_SECRET as string,
       {
         identity: userId,
         ttl: "10m",
@@ -49,7 +47,7 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
   })
   .post("/", async (c) => {
     const userId = c.get("userId");
-    const id = uuid();
+    const id = uuidv4();
 
     const result = await prisma.room.create({
       data: {
