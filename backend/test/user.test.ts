@@ -1,10 +1,10 @@
-import { it, expect, describe, beforeAll, afterAll, jest } from '@jest/globals';
-import { closeServer } from '../src/index.js';
-import { spyOn } from 'jest-mock';
-import * as authMiddleware from '../src/middleware.js';
-import { testClient } from 'hono/testing';
-import app from '../src/index.js';
-import { PrismaClient } from '@prisma/client';
+import { it, expect, describe, beforeAll, afterAll, jest } from "@jest/globals";
+import { closeServer } from "../src/index.js";
+import { spyOn } from "jest-mock";
+import * as authMiddleware from "../src/middleware.js";
+import { testClient } from "hono/testing";
+import app from "../src/index.js";
+import { PrismaClient } from "@prisma/client";
 
 const client = testClient(app);
 const prisma = new PrismaClient();
@@ -12,14 +12,16 @@ const prisma = new PrismaClient();
 // verifyJWTをモック化
 describe("UserRoute API", () => {
   beforeAll(async () => {
-    spyOn(authMiddleware, 'verifyJWT').mockImplementation(async (token: string) => {
-      if (token === "validtoken1") {
-        return "validuser1";
-      } else if (token === "validtoken2") {
-        return "validuser2";
-      }
-      return null;
-    });
+    spyOn(authMiddleware, "verifyJWT").mockImplementation(
+      async (token: string) => {
+        if (token === "validtoken1") {
+          return "validuser1";
+        } else if (token === "validtoken2") {
+          return "validuser2";
+        }
+        return null;
+      },
+    );
 
     await prisma.user.create({
       data: {
@@ -27,21 +29,19 @@ describe("UserRoute API", () => {
         display_name: "user1",
         icon_uri: "icon1",
         description: "description1",
-      }
-    })
+      },
+    });
   });
 
   afterAll(async () => {
     jest.restoreAllMocks();
     closeServer();
-    await prisma.user.delete(
-      {
-        where: {
-          id: "validuser1",
-        }
-      }
-    )
-  })
+    await prisma.user.delete({
+      where: {
+        id: "validuser1",
+      },
+    });
+  });
 
   it("should return status 200 when token is valid", async () => {
     // テスト用のリクエストを送信
@@ -53,18 +53,14 @@ describe("UserRoute API", () => {
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual([
-      expect.objectContaining(
-        {
-        
-          id: "validuser1",
-          display_name: "user1",
-          icon_uri: "icon1",
-          description: "description1",
-        }
-      )
-    ])
+      expect.objectContaining({
+        id: "validuser1",
+        display_name: "user1",
+        icon_uri: "icon1",
+        description: "description1",
+      }),
+    ]);
   });
-
 
   it("should return status 401 when token is invalid", async () => {
     const res = await client.users.$get("/", {
