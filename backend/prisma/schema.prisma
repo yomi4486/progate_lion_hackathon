@@ -18,8 +18,10 @@ model User {
   display_name String @db.VarChar(32)
   icon_uri String
   description String @db.VarChar(256)
+  is_streaming Boolean @default(false)
   following_id Follow[] @relation("following_relation")
   followee_id Follow[] @relation("followee_relation")
+  stream Stream[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
@@ -33,4 +35,19 @@ model Follow {
   updated_at DateTime @updatedAt
   
   @@unique([following_id, followee_id])
+}
+
+model Stream {
+  rtmp_url String @unique
+  rtmp_secret String
+  hls_url String @unique
+  user_id String
+  stream_id String @id
+  stream_title String @db.VarChar(64)
+  stream_description String @db.VarChar(256)
+  stream_tags String[]
+  stream_thumbnail String
+  stream_started_at DateTime @default(now())
+  stream_ended_at DateTime?
+  streaming_user User @relation(fields: [user_id], references: [id])
 }
