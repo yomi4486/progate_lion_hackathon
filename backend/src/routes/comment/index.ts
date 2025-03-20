@@ -63,18 +63,16 @@ export const CommentRoute = new Hono<{ Variables: { userId: string } }>()
       return c.json(response);
     },
   )
-  .delete("/:roomId/:commentId", 
-    async (c) => {
-        const roomId = c.req.param("roomId");
-        const commentId = c.req.param("commentId");
-        const deleteCommand = new DeleteCommand({
-            TableName: tableName,
-            Key: {
-                room_id: roomId,
-                comment_id: commentId,
-            },
-        })
-        const response = await docClient.send(deleteCommand);
-        return c.json(response);
-    }
-  )
+  .delete("/:roomId/:commentId", async (c) => {
+    const roomId = c.req.param("roomId");
+    const commentId = c.req.param("commentId");
+    const deleteCommand = new DeleteCommand({
+      TableName: tableName,
+      Key: {
+        room_id: roomId,
+        comment_id: commentId,
+      },
+    });
+    const response = await docClient.send(deleteCommand);
+    return c.json(response);
+  });
