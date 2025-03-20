@@ -49,7 +49,6 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
     const userId = c.get("userId");
     const id = uuidv4();
 
-    console.log(id);
     const result = await prisma.room.create({
       data: {
         room_id: id,
