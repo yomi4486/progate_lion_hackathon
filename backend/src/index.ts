@@ -29,7 +29,7 @@ const app = new Hono<{ Variables: { userId: string } }>()
   .route("/users", UserRoute)
   .route("/follow", FollowRoute)
   .route("/room", RoomRoute)
-  .route("/comment", CommentRoute)
+  .route("/comments", CommentRoute)
   .notFound((c) => c.text("Not Found", 404));
 
 export const server = serve(
