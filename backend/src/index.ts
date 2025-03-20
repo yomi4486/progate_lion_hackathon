@@ -6,6 +6,7 @@ import { verifyJWT } from "./middleware.js";
 import { UserRoute } from "./routes/user/index.js";
 import { FollowRoute } from "./routes/follow/index.js";
 import { RoomRoute } from "./routes/room/index.js";
+import { CommentRoute } from "./routes/comment/index.js";
 
 config();
 
@@ -28,6 +29,7 @@ const app = new Hono<{ Variables: { userId: string } }>()
   .route("/users", UserRoute)
   .route("/follow", FollowRoute)
   .route("/room", RoomRoute)
+  .route("/comment", CommentRoute)
   .notFound((c) => c.text("Not Found", 404));
 
 export const server = serve(
