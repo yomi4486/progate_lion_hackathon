@@ -7,5 +7,5 @@ export const createCommentScheme = z.object({
 });
 
 export const updateCommentScheme = z.object({
-    comment: z.string().max(256).optional(),
-})
+  comment: z.string().max(256).optional(),
+});
