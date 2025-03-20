@@ -17,4 +17,4 @@ npm run dev
 ```
 
 ### 使用技術
-<img src="https://go-skill-icons.vercel.app/api/icons?i=reactnative,expo,typescript,jest,aws,githubactions,hono,docker" />
+<img src="https://go-skill-icons.vercel.app/api/icons?i=reactnative,expo,typescript,jest,aws,githubactions,hono,docker,postgresql" />
