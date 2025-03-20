@@ -1,18 +1,23 @@
 import { serve } from "@hono/node-server";
 import { logger } from "hono/logger";
 import { Hono } from "hono";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import { verifyJWT } from "./middleware.js";
 import { UserRoute } from "./routes/user/index.js";
 import { FollowRoute } from "./routes/follow/index.js";
 import { RoomRoute } from "./routes/room/index.js";
 
-dotenv.config();
+config();
 
 const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", logger())
   .use("*", async (c, next) => {
-    const result = await verifyJWT(c);
+    const authHeader = c.req.header("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+    const token = authHeader.split(" ")[1];
+    const result = await verifyJWT(token);
     if (result === null) {
       return c.json({ message: "Unauthorized" }, 401);
     }
@@ -25,7 +30,7 @@ const app = new Hono<{ Variables: { userId: string } }>()
   .route("/room", RoomRoute)
   .notFound((c) => c.text("Not Found", 404));
 
-serve(
+export const server = serve(
   {
     fetch: app.fetch,
     port: 3000,
@@ -35,5 +40,8 @@ serve(
   },
 );
 
+export const closeServer = () => {
+  server.close();
+};
 export type AppType = typeof app;
 export default app;

@@ -1,8 +1,7 @@
 import { CognitoJwtVerifier } from "aws-jwt-verify";
-import type { Context } from "hono";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 
-dotenv.config();
+config();
 
 const verifier = CognitoJwtVerifier.create({
   userPoolId: process.env.USERPOOL_ID as string,
@@ -10,15 +9,8 @@ const verifier = CognitoJwtVerifier.create({
   clientId: process.env.CLIENT_ID as string,
 });
 
-export const verifyJWT = async (c: Context): Promise<string | null> => {
+export const verifyJWT = async (token: string): Promise<string | null> => {
   try {
-    const authHeader = c.req.header("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return null;
-    }
-
-    const token = authHeader.split(" ")[1];
-
     const payload = await verifier.verify(token);
     return payload.sub;
   } catch (error) {
