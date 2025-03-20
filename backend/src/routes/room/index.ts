@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import { AccessToken, RoomServiceClient } from "livekit-server-sdk";
 import { uuid } from "uuidv4";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import { zValidator } from "@hono/zod-validator";
 import { createTokenScheme } from "./scheme.js";
 import { PrismaClient } from "@prisma/client";
 
-dotenv.config();
+config();
 
 const livekitHost = "https://progatehackathon-0vilmkur.livekit.cloud";
 const roomService = new RoomServiceClient(
@@ -81,7 +81,7 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       return c.json({ message: "Room not found" }, 404);
     }
 
-    prisma.room.delete({
+    await prisma.room.delete({
       where: {
         room_id: roomId,
         room_owner_id: userId,
