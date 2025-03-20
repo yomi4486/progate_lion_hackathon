@@ -1,15 +1,19 @@
-import { StyleSheet, Button } from "react-native";
+import { StyleSheet, Button, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
-import VideoScreen from "../live/view";
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
+  const navigate = useRouter();
   return (
     <View style={{ height: "100%" }}>
       <DefaultHeader title="ホーム" showSettingButton={true} />
       <View style={styles.container}>
+        <TouchableOpacity onPress={()=>{
+          navigate.navigate("/room")
+        }}>
         <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
-        <VideoScreen />
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -9,6 +9,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { registerGlobals } from '@livekit/react-native';
 
 import { useColorScheme } from "@/components/useColorScheme";
 
@@ -17,6 +18,7 @@ import { Amplify } from "aws-amplify";
 import awsconfig from "../src/aws-exports.js";
 
 Amplify.configure(awsconfig);
+registerGlobals();
 
 export {
   // Catch any errors thrown by the Layout component.
