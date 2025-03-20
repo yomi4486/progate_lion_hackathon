@@ -16,12 +16,13 @@ export async function get(
       },
       { headers: { Authorization: `Bearer ${idToken}` } },
     );
-    if (!res.ok) return null;
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error("Failed request");
     const jsonContent = await res.json();
     return jsonContent;
   } catch (e) {
     console.error(e);
-    return null;
+    throw new Error(`${e}`);
   }
 }
 

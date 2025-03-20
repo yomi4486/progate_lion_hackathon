@@ -7,7 +7,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { use, useEffect,useState } from "react";
 import "react-native-reanimated";
 import { registerGlobals } from "@livekit/react-native";
 
@@ -16,6 +16,13 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { Authenticator } from "@aws-amplify/ui-react-native";
 import { Amplify } from "aws-amplify";
 import awsconfig from "../src/aws-exports.js";
+import { fetchAuthSession } from "aws-amplify/auth";
+import { Hub } from "aws-amplify/utils";
+import { useRouter } from "expo-router";
+import * as UserTool from "@/app/lib/user"
+import { View,Text } from "react-native";
+
+let isLoaded: boolean = false;
 
 Amplify.configure(awsconfig);
 registerGlobals();
@@ -34,9 +41,29 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [isNewUser, setNewUser] = useState(false);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
+  });
+
+  Hub.listen('auth', async (data) => {
+    const { payload } = data;
+    if (payload.event === 'signedIn'&&!isLoaded) {
+      isLoaded = true;
+      console.log('User signed in');
+      const session = await fetchAuthSession();
+      try{
+        const res = await UserTool.get(session.userSub!, session.tokens?.idToken?.toString()!);
+        if (res == null){
+          setNewUser(true)
+        } 
+        
+      }catch(e){  
+        console.error(e);
+        return;
+      }
+    }
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -54,12 +81,20 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return <RootLayoutNav isNewUser={isNewUser}/>;
 }
 
-function RootLayoutNav() {
+function RootLayoutNav({isNewUser}: {isNewUser: boolean}) {
   const colorScheme = useColorScheme();
+  const navigate = useRouter();
+  if(isNewUser){
+    try{
+      navigate.push("/new_user");
+    }catch(e){
+      
+    }
 
+  }
   return (
     <Authenticator.Provider>
       <Authenticator>
