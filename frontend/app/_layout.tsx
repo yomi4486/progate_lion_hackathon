@@ -7,7 +7,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 import { registerGlobals } from "@livekit/react-native";
 
@@ -19,7 +19,7 @@ import awsconfig from "../src/aws-exports.js";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { Hub } from "aws-amplify/utils";
 import { useRouter } from "expo-router";
-import * as UserTool from "@/app/lib/user"
+import * as UserTool from "@/app/lib/user";
 
 let isLoaded: boolean = false;
 
@@ -46,19 +46,21 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  Hub.listen('auth', async (data) => {
+  Hub.listen("auth", async (data) => {
     const { payload } = data;
-    if (payload.event === 'signedIn'&&!isLoaded) {
+    if (payload.event === "signedIn" && !isLoaded) {
       isLoaded = true;
-      console.log('User signed in');
+      console.log("User signed in");
       const session = await fetchAuthSession();
-      try{
-        const res = await UserTool.get(session.userSub!, session.tokens?.idToken?.toString()!);
-        if (res == null){
-          setNewUser(true)
-        } 
-        
-      }catch(e){  
+      try {
+        const res = await UserTool.get(
+          session.userSub!,
+          session.tokens?.idToken?.toString()!,
+        );
+        if (res == null) {
+          setNewUser(true);
+        }
+      } catch (e) {
         console.error(e);
         return;
       }
@@ -80,16 +82,16 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav isNewUser={isNewUser}/>;
+  return <RootLayoutNav isNewUser={isNewUser} />;
 }
 
-function RootLayoutNav({isNewUser}: {isNewUser: boolean}) {
+function RootLayoutNav({ isNewUser }: { isNewUser: boolean }) {
   const colorScheme = useColorScheme();
   const navigate = useRouter();
-  if(isNewUser){
-    try{
+  if (isNewUser) {
+    try {
       navigate.push("/new_user");
-    }catch(e){}
+    } catch (e) {}
   }
   return (
     <Authenticator.Provider>
