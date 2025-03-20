@@ -13,7 +13,8 @@ export async function get(
       param: { id: id },
     });
     if (!res.ok) return null;
-    return res.json();
+    const jsonContent = await res.json();
+    return jsonContent;
   } catch (e) {
     console.error(e);
     return null;
@@ -28,7 +29,8 @@ export async function getMyProfile(
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) return null;
-    return res.json();
+    const jsonContent = await res.json();
+    return jsonContent;
   } catch (e) {
     console.error(e);
     return null;
@@ -53,7 +55,8 @@ export async function setMyProfile(
       { headers: { Authorization: `Bearer ${token}` } },
     );
     if (!res.ok) return null;
-    return res.json();
+    const jsonContent = await res.json();
+    return jsonContent;
   } catch (e) {
     console.error(e);
     return null;
@@ -79,7 +82,8 @@ export async function editMyProfile(
       { headers: { Authorization: `Bearer ${token}` } },
     );
     if (!res.ok) return null;
-    return res.json();
+    const jsonContent = await res.json();
+    return jsonContent;
   } catch (e) {
     console.error(e);
     return null;
