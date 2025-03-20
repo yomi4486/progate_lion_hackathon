@@ -1,13 +1,13 @@
 import { serve } from "@hono/node-server";
 import { logger } from "hono/logger";
 import { Hono } from "hono";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import { verifyJWT } from "./middleware.js";
 import { UserRoute } from "./routes/user/index.js";
 import { FollowRoute } from "./routes/follow/index.js";
 import { RoomRoute } from "./routes/room/index.js";
 
-dotenv.config();
+config();
 
 const app = new Hono<{ Variables: { userId: string } }>()
   .use("*", logger())
