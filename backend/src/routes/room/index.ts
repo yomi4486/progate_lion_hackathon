@@ -32,8 +32,8 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
     }
 
     const at = new AccessToken(
-      process.env.LIVEKIT_API_KEY,
-      process.env.LIVEKIT_API_SECRET,
+      process.env.LIVEKIT_API_KEY as string,
+      process.env.LIVEKIT_API_SECRET as string,
       {
         identity: userId,
         ttl: "10m",
