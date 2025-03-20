@@ -1,19 +1,14 @@
 import {
   StyleSheet,
-  Button,
   TouchableOpacity,
   TextInput,
-  Modal,
-  Animated,
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 import { useRouter } from "expo-router";
-import * as RoomUtils from "@/app/lib/room";
 import * as UserUtils from "@/app/lib/user";
-import FloatingActionButton from "../components/floatActionButton";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { useState } from "react";
 

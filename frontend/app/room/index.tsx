@@ -8,7 +8,6 @@ import {
   TrackReferenceOrPlaceholder,
   VideoTrack,
   isTrackReference,
-  registerGlobals,
 } from "@livekit/react-native";
 import { Track } from "livekit-client";
 

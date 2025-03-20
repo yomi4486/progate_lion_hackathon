@@ -7,7 +7,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { use, useEffect,useState } from "react";
+import { useEffect,useState } from "react";
 import "react-native-reanimated";
 import { registerGlobals } from "@livekit/react-native";
 
@@ -20,7 +20,6 @@ import { fetchAuthSession } from "aws-amplify/auth";
 import { Hub } from "aws-amplify/utils";
 import { useRouter } from "expo-router";
 import * as UserTool from "@/app/lib/user"
-import { View,Text } from "react-native";
 
 let isLoaded: boolean = false;
 
@@ -90,10 +89,7 @@ function RootLayoutNav({isNewUser}: {isNewUser: boolean}) {
   if(isNewUser){
     try{
       navigate.push("/new_user");
-    }catch(e){
-      
-    }
-
+    }catch(e){}
   }
   return (
     <Authenticator.Provider>
