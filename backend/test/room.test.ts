@@ -5,6 +5,8 @@ import * as authMiddleware from "../src/middleware.js";
 import { testClient } from "hono/testing";
 import app from "../src/index.js";
 import { PrismaClient } from "@prisma/client";
+import { Room } from "livekit-server-sdk";
+import { create } from "domain";
 
 jest.mock("livekit-server-sdk", () => {
   return {
@@ -55,6 +57,10 @@ describe("UserRoute API", () => {
       data: {
         room_id: "room1",
         room_owner_id: "validRoomTestUser1",
+        room_title: "title1",
+        room_description: "description1",
+        room_thumbnail: "thumbnail1",
+        room_tags: ["tag1", "tag2"],
       },
     });
 
@@ -62,6 +68,10 @@ describe("UserRoute API", () => {
       data: {
         room_id: "room2",
         room_owner_id: "validRoomTestUser1",
+        room_title: "title2",
+        room_description: "description2",
+        room_thumbnail: "thumbnail2",
+        room_tags: ["tag1", "tag2"],
       },
     });
   });
@@ -84,6 +94,39 @@ describe("UserRoute API", () => {
     });
     closeServer();
   });
+
+  it("GET /room should return all rooms", async () => {
+    const res = await client.room.$get(
+      {},
+      {
+        headers: { Authorization : "Bearer validtoken1" },
+      }
+    )
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual([
+      {
+        room_id: "room1",
+        room_owner_id: "validRoomTestUser1",
+        room_title: "title1",
+        room_description: "description1",
+        room_thumbnail: "thumbnail1",
+        room_tags: ["tag1", "tag2"],
+        created_at: expect.any(String),
+        updated_at: expect.any(String),
+      },
+      {
+        room_id: "room2",
+        room_owner_id: "validRoomTestUser1",
+        room_title: "title2",
+        room_description: "description2",
+        room_thumbnail: "thumbnail2",
+        room_tags: ["tag1", "tag2"],
+        created_at: expect.any(String),
+        updated_at: expect.any(String),
+      }
+    ])
+  })
 
   it("should get room by id", async () => {
     const res = await client.room[":id"].$get(
@@ -120,13 +163,25 @@ describe("UserRoute API", () => {
 
   it("should return 200 when room is created", async () => {
     const res = await client.room.$post(
-      {},
+      {
+        json: {
+          room_title: "title3",
+          room_description: "description3",
+          room_thumbnail: "thumbnail3",
+          room_tags: ["tag1", "tag2"],
+        }
+      },
       {
         headers: { Authorization: "Bearer validtoken1" },
       },
     );
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ message: "Room created" });
+    expect(await res.json()).toEqual({
+      message: "Room created",
+      room_id: expect.stringMatching(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+      ), // UUID形式
+    });
   });
 
   it("should not delete room if user is not owner", async () => {
