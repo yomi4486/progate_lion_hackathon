@@ -1,19 +1,27 @@
-# Progate-lion-hackathon - 人とAIをライブで繋ぐサービス
-### フロントエンドの実行
+# Alive Talk - 人とAIをライブで繋ぐサービス
 
->ios
+### リポジトリをクローン    
 ```sh
-make ios
+git clone https://github.com/yomi4486/progate_lion_hackathon.git
+cd progate_lion_hackathon
 ```
->web
+### フロントエンドの起動
+
+#### ios
 ```sh
-make web
+cd frontend && make ios
 ```
 
-### バックエンドの実行
-
+#### web
 ```sh
-npm run dev
+cd frontend && make web
+``` 
+### バックエンドの起動    
+```sh
+cd backend
+yarn install
+yarn run dev
+yarn run migrate
 ```
 
 ### 使用技術
