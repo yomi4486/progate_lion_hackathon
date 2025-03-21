@@ -35,7 +35,6 @@ describe("UserRoute API", () => {
 
   afterAll(async () => {
     jest.restoreAllMocks();
-    closeServer();
   
     await prisma.follow.deleteMany({
       where: {
@@ -53,6 +52,17 @@ describe("UserRoute API", () => {
         },
       },
     });
+
+    await prisma.user.deleteMany(
+      {
+        where: {
+          id: {
+            in: ["validuser1", "validuser2"],
+          },
+        },
+      },
+    )
+    closeServer();
   });
 
   it("should return status 200 when token is valid", async () => {
@@ -149,22 +159,22 @@ describe("UserRoute API", () => {
     const res = await client.users.$put(
       {
         json: {
-          display_name: 'updated_user2'
+          display_name: 'updated_user1'
         },
       },
       {
         headers: {
-          Authorization: 'Bearer validtoken2',
+          Authorization: 'Bearer validtoken1',
         },
       },
     );
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(
       expect.objectContaining({
-        id: 'validuser2',
-        display_name: 'updated_user2',
-        icon_uri: 'icon2',
-        description: 'description2',
+        id: 'validuser1',
+        display_name: 'updated_user1',
+        icon_uri: 'icon1',
+        description: 'description1',
         updated_at: expect.any(String),
       }),
     );
@@ -179,7 +189,7 @@ describe("UserRoute API", () => {
     expect(await res.json()).toEqual(
       expect.objectContaining({
         id: 'validuser2',
-        display_name: 'updated_user2',
+        display_name: 'user2',
         icon_uri: 'icon2',
         description: 'description2',
         updated_at: expect.any(String),

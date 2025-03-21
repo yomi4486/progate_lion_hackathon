@@ -1,14 +1,14 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client";
 import { zValidator } from "@hono/zod-validator";
-import { createFollowScheme, deleteFollowScheme } from "./scheme.js";
+import { createFollowScheme　} from "./scheme.js";
 
 const prisma = new PrismaClient();
 
 export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
   .get("/", async (c) => {
     const result = await prisma.follow.findMany();
-    if (!result) {
+    if (!result || result.length === 0) {
       return c.json({ message: "User not found" }, 404);
     }
     return c.json(result);
@@ -30,7 +30,7 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
         },
       },
     });
-    if (!result) {
+    if (!result || result.length === 0) {
       return c.json({ message: "User not found" }, 404);
     }
     return c.json(result);
@@ -52,7 +52,7 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
         },
       },
     });
-    if (!result) {
+    if (!result || result.length === 0) {
       return c.json({ message: "User not found" }, 404);
     }
     return c.json(result);
@@ -97,11 +97,6 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
   )
   .delete(
     "/:id",
-    zValidator("json", deleteFollowScheme, (result, c) => {
-      if (!result.success) {
-        return c.json({ message: "Invalid request" }, 400);
-      }
-    }),
     async (c) => {
       const id = c.req.param("id");
       const userId = c.get("userId");
