@@ -14,7 +14,7 @@ import awsconfig from "../src/aws-exports.js";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { useRouter } from "expo-router";
 import * as UserTool from "@/app/lib/user";
-import { View,Text } from "react-native";
+import { View, Text } from "react-native";
 import DefaultRootLayoutNav, { NewUserRootLayoutNav } from "@/app/root";
 
 let isLoaded: boolean = false;
@@ -36,14 +36,14 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [isNewUser, setNewUser] = useState<boolean|undefined>(undefined);
+  const [isNewUser, setNewUser] = useState<boolean | undefined>(undefined);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
 
   useEffect(() => {
-    const data = async() => {
+    const data = async () => {
       isLoaded = true;
       const session = await fetchAuthSession();
       try {
@@ -51,23 +51,23 @@ export default function RootLayout() {
           session.userSub!,
           session.tokens?.idToken?.toString()!,
         );
-        console.log(res)
+        console.log(res);
         if (res == null) {
           setNewUser(true);
-        }else{
+        } else {
           setNewUser(false);
         }
       } catch (e) {
         console.error(e);
         return;
       }
-    }
+    };
     data();
-  },[]);
+  }, []);
 
-  Hub.listen("auth", async(data) => {
-    if (data.payload.event === "signedIn") { 
-      console.log("OK")
+  Hub.listen("auth", async (data) => {
+    if (data.payload.event === "signedIn") {
+      console.log("OK");
       setNewUser(undefined);
       const session = await fetchAuthSession();
       try {
@@ -75,10 +75,10 @@ export default function RootLayout() {
           session.userSub!,
           session.tokens?.idToken?.toString()!,
         );
-        console.log(res)
+        console.log(res);
         if (res == null) {
           setNewUser(true);
-        }else{
+        } else {
           setNewUser(false);
         }
       } catch (e) {
@@ -106,55 +106,66 @@ export default function RootLayout() {
   return <RootLayoutNav isNewUser={isNewUser} />;
 }
 
-function RootLayoutNav({ isNewUser }: { isNewUser: boolean|undefined }) {
+function RootLayoutNav({ isNewUser }: { isNewUser: boolean | undefined }) {
   const colorScheme = useColorScheme();
   const navigate = useRouter();
-  console.log(isNewUser)
+  console.log(isNewUser);
   if (isNewUser === undefined) {
     return (
       <Authenticator.Provider>
-      <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
-        <View style={styles.container}>
-          <Text>ローディング中</Text>
-        </View>
-      </Authenticator>
+        <Authenticator
+          loginMechanisms={["email"]}
+          socialProviders={["google", "apple", "amazon"]}
+        >
+          <View style={styles.container}>
+            <Text>ローディング中</Text>
+          </View>
+        </Authenticator>
       </Authenticator.Provider>
     );
-  }else if(isNewUser == true){
+  } else if (isNewUser == true) {
     return (
       <Authenticator.Provider>
-        <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
+        <Authenticator
+          loginMechanisms={["email"]}
+          socialProviders={["google", "apple", "amazon"]}
+        >
           <NewUserRootLayoutNav />
         </Authenticator>
       </Authenticator.Provider>
     );
-  }else if(isNewUser == false){
-    return(
-    <Authenticator.Provider>
-      <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
-        <DefaultRootLayoutNav />
-      </Authenticator>
-    </Authenticator.Provider>
-    );
-  }else{
+  } else if (isNewUser == false) {
     return (
       <Authenticator.Provider>
-      <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
-        <View style={styles.container}>
-          <Text>ローディング中</Text>
-        </View>
-      </Authenticator>
+        <Authenticator
+          loginMechanisms={["email"]}
+          socialProviders={["google", "apple", "amazon"]}
+        >
+          <DefaultRootLayoutNav />
+        </Authenticator>
+      </Authenticator.Provider>
+    );
+  } else {
+    return (
+      <Authenticator.Provider>
+        <Authenticator
+          loginMechanisms={["email"]}
+          socialProviders={["google", "apple", "amazon"]}
+        >
+          <View style={styles.container}>
+            <Text>ローディング中</Text>
+          </View>
+        </Authenticator>
       </Authenticator.Provider>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ecf0f1",
   },
 });
