@@ -61,12 +61,12 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       return c.json({ message: "Failed to create room" }, 500);
     }
 
-    const room = await roomService.createRoom({
+    await roomService.createRoom({
       name: id,
       emptyTimeout: 10 * 60, // 10 minutes
       maxParticipants: 100,
     });
-    return c.json(room);
+    return c.json({ message: "Room created" });
   })
   .delete("/:id", async (c) => {
     const roomId = c.req.param("id");

@@ -53,6 +53,13 @@ describe("UserRoute API", () => {
                 room_owner_id: "validRoomTestUser1",
             }
         })
+
+        await prisma.room.create({
+            data: {
+                room_id: "room2",
+                room_owner_id: "validRoomTestUser1",
+            }
+        })
     });
 
     afterAll(async () => {
@@ -93,5 +100,69 @@ describe("UserRoute API", () => {
             room_id: "room1",
             room_owner_id: "validRoomTestUser1",
         })
+    })
+
+    it("should return status 404 when room is not found", async() => {
+        const res = await client.room[":id"].$get(
+            {
+                param: { id: "room4" }
+            },
+            {
+                headers: { Authorization: "Bearer validtoken1" }
+            }
+        );
+
+        expect(res.status).toBe(404);
+        expect(await res.json()).toEqual({ message: "Room not found" });
+    })
+
+    it("should return 200 when room is created", async () => {
+        const res = await client.room.$post(
+            {},
+            {
+                headers: { Authorization: "Bearer validtoken1" }
+            }
+        )
+        expect(res.status).toBe(200);
+        expect(await res.json()).toEqual({ message: "Room created" });
+    });
+
+    it("should not delete room if user is not owner", async () => {
+        const res = await client.room[":id"].$delete(
+            {
+                param: { id: "room1" }
+            },
+            {
+                headers: { Authorization : "Bearer validtoken2" }
+            }
+        )
+        expect(res.status).toBe(404);
+        expect(await res.json()).toEqual({ message: "Room not found" });
+    })
+
+    it("should not delete room if room does not exist", async () => {
+        const res = await client.room[":id"].$delete(
+            {
+                param: { id: "room3"}
+            },
+            {
+                headers: { Authorization: "Bearer validtoken1" }
+            }
+        )
+        expect(res.status).toBe(404);
+        expect(await res.json()).toEqual({ message: "Room not found" });
+    })
+
+    it("should delete room if user is owner and room exists", async () => {
+        const res = await client.room[":id"].$delete(
+            {
+                param: { id: "room2" }
+            },
+            {
+                headers: { Authorization: "Bearer validtoken1" }
+            }
+        )
+        expect(res.status).toBe(200);
+        expect(await res.json()).toEqual({ message: "Room deleted" });
     })
 });
