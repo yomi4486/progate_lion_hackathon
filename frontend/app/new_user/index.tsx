@@ -46,6 +46,8 @@ export default function NewUserScreen() {
               borderColor: "brack",
               borderWidth: 0.5,
               borderRadius: 3,
+              marginBottom:15,
+              paddingHorizontal: 10,
             }}
           />
           <Text
@@ -69,6 +71,8 @@ export default function NewUserScreen() {
               borderColor: "brack",
               borderWidth: 0.5,
               borderRadius: 3,
+              marginBottom:15,
+              paddingHorizontal: 10,
             }}
           />
           <TouchableOpacity
