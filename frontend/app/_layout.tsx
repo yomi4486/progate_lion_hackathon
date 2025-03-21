@@ -6,6 +6,7 @@ import "react-native-reanimated";
 import { registerGlobals } from "@livekit/react-native";
 import { StyleSheet } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
+import { Hub } from "aws-amplify/utils";
 
 import { Authenticator } from "@aws-amplify/ui-react-native";
 import { Amplify } from "aws-amplify";
@@ -44,9 +45,7 @@ export default function RootLayout() {
   useEffect(() => {
     const data = async() => {
       isLoaded = true;
-      console.log("ok")
       const session = await fetchAuthSession();
-      console.log("OK")
       try {
         const res = await UserTool.get(
           session.userSub!,
@@ -65,6 +64,29 @@ export default function RootLayout() {
     }
     data();
   },[]);
+
+  Hub.listen("auth", async(data) => {
+    if (data.payload.event === "signedIn") { 
+      console.log("OK")
+      setNewUser(undefined);
+      const session = await fetchAuthSession();
+      try {
+        const res = await UserTool.get(
+          session.userSub!,
+          session.tokens?.idToken?.toString()!,
+        );
+        console.log(res)
+        if (res == null) {
+          setNewUser(true);
+        }else{
+          setNewUser(false);
+        }
+      } catch (e) {
+        console.error(e);
+        return;
+      }
+    }
+  });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -89,7 +111,6 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean|undefined }) {
   const navigate = useRouter();
   console.log(isNewUser)
   if (isNewUser === undefined) {
-    // ローディング中の表示
     return (
       <Authenticator.Provider>
       <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
@@ -99,8 +120,7 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean|undefined }) {
       </Authenticator>
       </Authenticator.Provider>
     );
-  }
-  if(isNewUser){
+  }else if(isNewUser == true){
     return (
       <Authenticator.Provider>
         <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
@@ -108,13 +128,23 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean|undefined }) {
         </Authenticator>
       </Authenticator.Provider>
     );
-  }else{
+  }else if(isNewUser == false){
     return(
     <Authenticator.Provider>
       <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
         <DefaultRootLayoutNav />
       </Authenticator>
     </Authenticator.Provider>
+    );
+  }else{
+    return (
+      <Authenticator.Provider>
+      <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
+        <View style={styles.container}>
+          <Text>ローディング中</Text>
+        </View>
+      </Authenticator>
+      </Authenticator.Provider>
     );
   }
 
