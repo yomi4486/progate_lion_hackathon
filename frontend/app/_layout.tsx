@@ -1,23 +1,16 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import "react-native-reanimated";
 import { registerGlobals } from "@livekit/react-native";
-
+import { StyleSheet } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
 
 import { Authenticator } from "@aws-amplify/ui-react-native";
 import { Amplify } from "aws-amplify";
 import awsconfig from "../src/aws-exports.js";
 import { fetchAuthSession } from "aws-amplify/auth";
-import { Hub } from "aws-amplify/utils";
 import { useRouter } from "expo-router";
 import * as UserTool from "@/app/lib/user";
 import { View,Text } from "react-native";
@@ -50,23 +43,25 @@ export default function RootLayout() {
 
   useEffect(() => {
     const data = async() => {
-    isLoaded = true;
-    console.log("User signed in");
-    const session = await fetchAuthSession();
-    try {
-      const res = await UserTool.get(
-        session.userSub!,
-        session.tokens?.idToken?.toString()!,
-      );
-      if (res == null) {
-        setNewUser(true);
-      }else{
-        setNewUser(false);
+      isLoaded = true;
+      console.log("ok")
+      const session = await fetchAuthSession();
+      console.log("OK")
+      try {
+        const res = await UserTool.get(
+          session.userSub!,
+          session.tokens?.idToken?.toString()!,
+        );
+        console.log(res)
+        if (res == null) {
+          setNewUser(true);
+        }else{
+          setNewUser(false);
+        }
+      } catch (e) {
+        console.error(e);
+        return;
       }
-    } catch (e) {
-      console.error(e);
-      return;
-    }
     }
     data();
   },[]);
@@ -95,7 +90,15 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean|undefined }) {
   console.log(isNewUser)
   if (isNewUser === undefined) {
     // ローディング中の表示
-    return <View><Text>ローディング中</Text></View>
+    return (
+      <Authenticator.Provider>
+      <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
+        <View style={styles.container}>
+          <Text>ローディング中</Text>
+        </View>
+      </Authenticator>
+      </Authenticator.Provider>
+    );
   }
   if(isNewUser){
     return (
@@ -116,3 +119,12 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean|undefined }) {
   }
 
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ecf0f1',
+  },
+});
