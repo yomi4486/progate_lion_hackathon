@@ -37,11 +37,12 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
         ttl: "10m",
       },
     );
+
     at.addGrant({ roomJoin: true, room: roomId });
 
     return c.json({
-      token: at.toJwt(),
-      roomId: roomId,
+      token: await at.toJwt(),
+      room_id: roomId,
       room_owner_id: result.room_owner_id,
     });
   })
@@ -60,12 +61,12 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       return c.json({ message: "Failed to create room" }, 500);
     }
 
-    const room = await roomService.createRoom({
+    await roomService.createRoom({
       name: id,
       emptyTimeout: 10 * 60, // 10 minutes
       maxParticipants: 100,
     });
-    return c.json(room);
+    return c.json({ message: "Room created" });
   })
   .delete("/:id", async (c) => {
     const roomId = c.req.param("id");
