@@ -26,9 +26,9 @@ const docClient = DynamoDBDocumentClient.from(client);
 const tableName = "comments";
 
 export const CommentRoute = new Hono<{ Variables: { userId: string } }>()
-.get("/:roomId", async (c) => {
+  .get("/:roomId", async (c) => {
     const roomId = c.req.param("roomId");
-  
+
     const queryCommand = new QueryCommand({
       TableName: tableName,
       IndexName: "room_id-created_at-index",
@@ -40,7 +40,7 @@ export const CommentRoute = new Hono<{ Variables: { userId: string } }>()
       ScanIndexForward: false,
       Limit: 500,
     });
-  
+
     const response = await docClient.send(queryCommand);
     return c.json({ comments: response.Items });
   })

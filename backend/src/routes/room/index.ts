@@ -66,7 +66,7 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       emptyTimeout: 10 * 60, // 10 minutes
       maxParticipants: 100,
     });
-    return c.json({ message: "Room created", room_id: id});
+    return c.json({ message: "Room created", room_id: id });
   })
   .delete("/:id", async (c) => {
     const roomId = c.req.param("id");
