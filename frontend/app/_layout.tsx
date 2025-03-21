@@ -20,6 +20,7 @@ import { fetchAuthSession } from "aws-amplify/auth";
 import { Hub } from "aws-amplify/utils";
 import { useRouter } from "expo-router";
 import * as UserTool from "@/app/lib/user";
+import { View,Text } from "react-native";
 import DefaultRootLayoutNav, { NewUserRootLayoutNav } from "@/app/root";
 
 let isLoaded: boolean = false;
@@ -41,32 +42,34 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [isNewUser, setNewUser] = useState(false);
+  const [isNewUser, setNewUser] = useState<boolean|undefined>(undefined);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
 
-  Hub.listen("auth", async (data) => {
-    const { payload } = data;
-    if (payload.event === "signedIn" && !isLoaded) {
-      isLoaded = true;
-      console.log("User signed in");
-      const session = await fetchAuthSession();
-      try {
-        const res = await UserTool.get(
-          session.userSub!,
-          session.tokens?.idToken?.toString()!,
-        );
-        if (res == null) {
-          setNewUser(true);
-        }
-      } catch (e) {
-        console.error(e);
-        return;
+  useEffect(() => {
+    const data = async() => {
+    isLoaded = true;
+    console.log("User signed in");
+    const session = await fetchAuthSession();
+    try {
+      const res = await UserTool.get(
+        session.userSub!,
+        session.tokens?.idToken?.toString()!,
+      );
+      if (res == null) {
+        setNewUser(true);
+      }else{
+        setNewUser(false);
       }
+    } catch (e) {
+      console.error(e);
+      return;
     }
-  });
+    }
+    data();
+  },[]);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -86,14 +89,30 @@ export default function RootLayout() {
   return <RootLayoutNav isNewUser={isNewUser} />;
 }
 
-function RootLayoutNav({ isNewUser }: { isNewUser: boolean }) {
+function RootLayoutNav({ isNewUser }: { isNewUser: boolean|undefined }) {
   const colorScheme = useColorScheme();
   const navigate = useRouter();
-  return (
+  console.log(isNewUser)
+  if (isNewUser === undefined) {
+    // ローディング中の表示
+    return <View><Text>ローディング中</Text></View>
+  }
+  if(isNewUser){
+    return (
+      <Authenticator.Provider>
+        <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
+          <NewUserRootLayoutNav />
+        </Authenticator>
+      </Authenticator.Provider>
+    );
+  }else{
+    return(
     <Authenticator.Provider>
-      <Authenticator>
-        {isNewUser ? <NewUserRootLayoutNav /> : <DefaultRootLayoutNav />}
+      <Authenticator loginMechanisms={["email"]} socialProviders={["google","apple","amazon"]}>
+        <DefaultRootLayoutNav />
       </Authenticator>
     </Authenticator.Provider>
-  );
+    );
+  }
+
 }
