@@ -2,7 +2,8 @@
   "name": "backend",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "migrate": "docker-compose up -d && npx prisma migrate dev"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.767.0",
