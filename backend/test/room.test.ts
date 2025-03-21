@@ -5,8 +5,6 @@ import * as authMiddleware from "../src/middleware.js";
 import { testClient } from "hono/testing";
 import app from "../src/index.js";
 import { PrismaClient } from "@prisma/client";
-import { Room } from "livekit-server-sdk";
-import { create } from "domain";
 
 jest.mock("livekit-server-sdk", () => {
   return {
