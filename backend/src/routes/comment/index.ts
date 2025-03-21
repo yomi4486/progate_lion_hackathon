@@ -31,7 +31,7 @@ export const CommentRoute = new Hono<{ Variables: { userId: string } }>()
   
     const queryCommand = new QueryCommand({
       TableName: tableName,
-      IndexName: "created_at-index",
+      IndexName: "room_id-created_at-index",
       KeyConditionExpression: "room_id = :room_id and created_at < :now_date",
       ExpressionAttributeValues: {
         ":room_id": roomId,
