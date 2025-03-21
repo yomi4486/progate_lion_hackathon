@@ -20,6 +20,7 @@ import { fetchAuthSession } from "aws-amplify/auth";
 import { Hub } from "aws-amplify/utils";
 import { useRouter } from "expo-router";
 import * as UserTool from "@/app/lib/user";
+import DefaultRootLayoutNav,{NewUserRootLayoutNav} from "@/app/root";
 
 let isLoaded: boolean = false;
 
@@ -88,25 +89,10 @@ export default function RootLayout() {
 function RootLayoutNav({ isNewUser }: { isNewUser: boolean }) {
   const colorScheme = useColorScheme();
   const navigate = useRouter();
-  if (isNewUser) {
-    try {
-      navigate.push("/new_user");
-    } catch (e) {}
-  }
   return (
     <Authenticator.Provider>
       <Authenticator>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: "modal", headerShown: false }}
-            />
-          </Stack>
-        </ThemeProvider>
+        {isNewUser ? <DefaultRootLayoutNav/>:<NewUserRootLayoutNav/>}
       </Authenticator>
     </Authenticator.Provider>
   );
