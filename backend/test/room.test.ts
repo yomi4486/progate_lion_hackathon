@@ -99,9 +99,9 @@ describe("UserRoute API", () => {
     const res = await client.room.$get(
       {},
       {
-        headers: { Authorization : "Bearer validtoken1" },
-      }
-    )
+        headers: { Authorization: "Bearer validtoken1" },
+      },
+    );
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual([
@@ -124,9 +124,9 @@ describe("UserRoute API", () => {
         room_tags: ["tag1", "tag2"],
         created_at: expect.any(String),
         updated_at: expect.any(String),
-      }
-    ])
-  })
+      },
+    ]);
+  });
 
   it("should get room by id", async () => {
     const res = await client.room[":id"].$get(
@@ -169,7 +169,7 @@ describe("UserRoute API", () => {
           room_description: "description3",
           room_thumbnail: "thumbnail3",
           room_tags: ["tag1", "tag2"],
-        }
+        },
       },
       {
         headers: { Authorization: "Bearer validtoken1" },
@@ -179,7 +179,7 @@ describe("UserRoute API", () => {
     expect(await res.json()).toEqual({
       message: "Room created",
       room_id: expect.stringMatching(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       ), // UUID形式
     });
   });
