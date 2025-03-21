@@ -37,7 +37,7 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
         ttl: "10m",
       },
     );
-    
+
     at.addGrant({ roomJoin: true, room: roomId });
 
     return c.json({

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client";
 import { zValidator } from "@hono/zod-validator";
-import { createFollowScheme　} from "./scheme.js";
+import { createFollowScheme } from "./scheme.js";
 
 const prisma = new PrismaClient();
 
@@ -95,34 +95,31 @@ export const FollowRoute = new Hono<{ Variables: { userId: string } }>()
       return c.json(result);
     },
   )
-  .delete(
-    "/:id",
-    async (c) => {
-      const id = c.req.param("id");
-      const userId = c.get("userId");
+  .delete("/:id", async (c) => {
+    const id = c.req.param("id");
+    const userId = c.get("userId");
 
-      const isExist = await prisma.follow.findUnique({
-        where: {
-          following_id_followee_id: {
-            following_id: userId,
-            followee_id: id,
-          },
+    const isExist = await prisma.follow.findUnique({
+      where: {
+        following_id_followee_id: {
+          following_id: userId,
+          followee_id: id,
         },
-      });
+      },
+    });
 
-      if (!isExist) {
-        return c.json({ message: "Not following" }, 409);
-      }
+    if (!isExist) {
+      return c.json({ message: "Not following" }, 409);
+    }
 
-      const result = await prisma.follow.delete({
-        where: {
-          following_id_followee_id: {
-            following_id: userId,
-            followee_id: id,
-          },
+    const result = await prisma.follow.delete({
+      where: {
+        following_id_followee_id: {
+          following_id: userId,
+          followee_id: id,
         },
-      });
+      },
+    });
 
-      return c.json(result);
-    },
-  );
+    return c.json(result);
+  });

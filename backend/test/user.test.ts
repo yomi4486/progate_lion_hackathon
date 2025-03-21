@@ -35,16 +35,13 @@ describe("UserRoute API", () => {
 
   afterAll(async () => {
     jest.restoreAllMocks();
-  
+
     await prisma.follow.deleteMany({
       where: {
-        OR: [
-          { following_id: "validuser1" },
-          { followee_id: "validuser1" },
-        ],
+        OR: [{ following_id: "validuser1" }, { followee_id: "validuser1" }],
       },
     });
-  
+
     await prisma.user.deleteMany({
       where: {
         id: {
@@ -53,15 +50,13 @@ describe("UserRoute API", () => {
       },
     });
 
-    await prisma.user.deleteMany(
-      {
-        where: {
-          id: {
-            in: ["validuser1", "validuser2"],
-          },
+    await prisma.user.deleteMany({
+      where: {
+        id: {
+          in: ["validuser1", "validuser2"],
         },
       },
-    )
+    });
     closeServer();
   });
 
@@ -90,14 +85,14 @@ describe("UserRoute API", () => {
     const res = await client.users.$post(
       {
         json: {
-          display_name: 'user1',
-          icon_uri: 'icon1',
-          description: 'description1',
+          display_name: "user1",
+          icon_uri: "icon1",
+          description: "description1",
         },
       },
       {
         headers: {
-          Authorization: 'Bearer validtoken1',
+          Authorization: "Bearer validtoken1",
         },
       },
     );
@@ -109,48 +104,48 @@ describe("UserRoute API", () => {
     const res = await client.users.$post(
       {
         json: {
-          display_name: 'user2',
-          icon_uri: 'icon2',
-          description: 'description2',
+          display_name: "user2",
+          icon_uri: "icon2",
+          description: "description2",
         },
       },
       {
         headers: {
-          Authorization: 'Bearer validtoken2',
+          Authorization: "Bearer validtoken2",
         },
       },
     );
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(
       expect.objectContaining({
-        id: 'validuser2',
-        display_name: 'user2',
-        icon_uri: 'icon2',
-        description: 'description2',
+        id: "validuser2",
+        display_name: "user2",
+        icon_uri: "icon2",
+        description: "description2",
       }),
     );
-  })
+  });
 
   it("should return 200 when get user by id", async () => {
     const res = await client.users[":id"].$get(
       {
         param: {
-          id: 'validuser1',
+          id: "validuser1",
         },
       },
       {
         headers: {
-          Authorization: 'Bearer validtoken1',
+          Authorization: "Bearer validtoken1",
         },
-      }
+      },
     );
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(
       expect.objectContaining({
-        id: 'validuser1',
-        display_name: 'user1',
-        icon_uri: 'icon1',
-        description: 'description1',
+        id: "validuser1",
+        display_name: "user1",
+        icon_uri: "icon1",
+        description: "description1",
       }),
     );
   });
@@ -159,22 +154,22 @@ describe("UserRoute API", () => {
     const res = await client.users.$put(
       {
         json: {
-          display_name: 'updated_user1'
+          display_name: "updated_user1",
         },
       },
       {
         headers: {
-          Authorization: 'Bearer validtoken1',
+          Authorization: "Bearer validtoken1",
         },
       },
     );
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(
       expect.objectContaining({
-        id: 'validuser1',
-        display_name: 'updated_user1',
-        icon_uri: 'icon1',
-        description: 'description1',
+        id: "validuser1",
+        display_name: "updated_user1",
+        icon_uri: "icon1",
+        description: "description1",
         updated_at: expect.any(String),
       }),
     );
@@ -182,35 +177,35 @@ describe("UserRoute API", () => {
   it("should return 200 when user is deleted", async () => {
     const res = await client.users.$delete("/", {
       headers: {
-        Authorization: 'Bearer validtoken2',
+        Authorization: "Bearer validtoken2",
       },
-    })
+    });
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(
       expect.objectContaining({
-        id: 'validuser2',
-        display_name: 'user2',
-        icon_uri: 'icon2',
-        description: 'description2',
+        id: "validuser2",
+        display_name: "user2",
+        icon_uri: "icon2",
+        description: "description2",
         updated_at: expect.any(String),
       }),
     );
-  })
+  });
 
   it("should return 404 when user is not found", async () => {
     const res = await client.users[":id"].$get(
       {
         param: {
-          id: 'invaliduser',
+          id: "invaliduser",
         },
       },
       {
         headers: {
-          Authorization: 'Bearer validtoken1',
+          Authorization: "Bearer validtoken1",
         },
       },
     );
     expect(res.status).toBe(404);
-    expect(await res.json()).toEqual({ message: 'User not found' });
+    expect(await res.json()).toEqual({ message: "User not found" });
   });
 });
