@@ -29,7 +29,7 @@ export default function TabLayout() {
           backgroundColor: "#222222", // タブの背景色を指定
           height: 90,
           paddingTop: 5,
-          display:"none"
+          display: "none",
         },
       }}
     >

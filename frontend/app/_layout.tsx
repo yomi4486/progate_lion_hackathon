@@ -20,7 +20,7 @@ import { fetchAuthSession } from "aws-amplify/auth";
 import { Hub } from "aws-amplify/utils";
 import { useRouter } from "expo-router";
 import * as UserTool from "@/app/lib/user";
-import DefaultRootLayoutNav,{NewUserRootLayoutNav} from "@/app/root";
+import DefaultRootLayoutNav, { NewUserRootLayoutNav } from "@/app/root";
 
 let isLoaded: boolean = false;
 
@@ -92,7 +92,7 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean }) {
   return (
     <Authenticator.Provider>
       <Authenticator>
-        {isNewUser ? <DefaultRootLayoutNav/>:<NewUserRootLayoutNav/>}
+        {isNewUser ? <DefaultRootLayoutNav /> : <NewUserRootLayoutNav />}
       </Authenticator>
     </Authenticator.Provider>
   );

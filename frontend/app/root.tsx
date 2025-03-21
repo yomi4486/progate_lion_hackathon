@@ -12,36 +12,30 @@ import { useRouter } from "expo-router";
 export default function DefaultRootLayoutNav() {
   const colorScheme = useColorScheme();
   return (
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: "modal", headerShown: false }}
-            />
-          </Stack>
-        </ThemeProvider>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="modal"
+          options={{ presentation: "modal", headerShown: false }}
+        />
+      </Stack>
+    </ThemeProvider>
   );
 }
 
-
 export function NewUserRootLayoutNav() {
-    const colorScheme = useColorScheme();
-    return (
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <Stack screenOptions={{ headerShown: false }} initialRouteName="new_user">
-              <Stack.Screen name="new_user" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="modal"
-                options={{ presentation: "modal", headerShown: false }}
-              />
-            </Stack>
-          </ThemeProvider>
-    );
+  const colorScheme = useColorScheme();
+  return (
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }} initialRouteName="new_user">
+        <Stack.Screen name="new_user" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="modal"
+          options={{ presentation: "modal", headerShown: false }}
+        />
+      </Stack>
+    </ThemeProvider>
+  );
 }
-  
