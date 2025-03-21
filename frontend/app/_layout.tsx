@@ -92,7 +92,7 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean }) {
   return (
     <Authenticator.Provider>
       <Authenticator>
-        {isNewUser ? <DefaultRootLayoutNav /> : <NewUserRootLayoutNav />}
+        {isNewUser ?  <NewUserRootLayoutNav />:<DefaultRootLayoutNav />}
       </Authenticator>
     </Authenticator.Provider>
   );
