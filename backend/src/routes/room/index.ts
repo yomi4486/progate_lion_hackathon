@@ -57,7 +57,8 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       room_owner_id: result.room_owner_id,
     });
   })
-  .post("/",
+  .post(
+    "/",
     zValidator("json", createRoomScheme, (result, c) => {
       if (!result.success) {
         return c.json({ message: "Invalid request" }, 400);
@@ -89,7 +90,8 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
         maxParticipants: 100,
       });
       return c.json({ message: "Room created", room_id: id });
-    })
+    },
+  )
   .delete("/:id", async (c) => {
     const roomId = c.req.param("id");
     const userId = c.get("userId");
