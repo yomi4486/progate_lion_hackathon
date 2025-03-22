@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: progate-lion-hackathon-app
-          image: 1192730322953.dkr.ecr.us-west-2.amazonaws.com/alive-talk/progate_lion_hackathon:${{ github.sha }}
+          image: '/:'
           ports:
             - containerPort: 3000
