@@ -8,7 +8,7 @@ import { zValidator } from "@hono/zod-validator";
 
 config();
 
-const livekitHost = "https://progatehackathon-0vilmkur.livekit.cloud";
+const livekitHost = "wss://progatehackathon-0vilmkur.livekit.cloud";
 const roomService = new RoomServiceClient(
   livekitHost,
   process.env.LIVEKIT_API_KEY,
