@@ -56,7 +56,13 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       },
     );
 
-    at.addGrant({ roomJoin: true, room: roomId });
+    at.addGrant({
+      roomJoin: true,
+      room: roomId,
+      canPublish: false,
+      canPublishData: true,
+      canSubscribe: true,
+    });
 
     return c.json({
       token: await at.toJwt(),
