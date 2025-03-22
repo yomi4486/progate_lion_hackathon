@@ -1,6 +1,7 @@
 import * as React from "react";
 import { StyleSheet, View, FlatList, ListRenderItem } from "react-native";
 import { useEffect } from "react";
+import { useLocalSearchParams } from "expo-router";
 import {
   AudioSession,
   LiveKitRoom,
@@ -14,8 +15,7 @@ import { Track } from "livekit-client";
 // !! Note !!
 // This sample hardcodes a token which expires in 2 hours.
 const wsURL = "wss://progatehackathon-0vilmkur.livekit.cloud";
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDI1NTA3NjgsImlzcyI6IkFQSVZxWFJMekZnRzNOaSIsIm5iZiI6MTc0MjQ2MDc2OCwic3ViIjoiMjAiLCJ2aWRlbyI6eyJjYW5QdWJsaXNoIjp0cnVlLCJjYW5QdWJsaXNoRGF0YSI6dHJ1ZSwiY2FuU3Vic2NyaWJlIjp0cnVlLCJyb29tIjoiaGFja2F0aG9uX3Rlc3QiLCJyb29tSm9pbiI6dHJ1ZX19.4che2yP5752nlTSZqp9r9D9yx1K5P0gappCz1bAjiQk";
+const { token } = useLocalSearchParams();
 
 export default function App() {
   // Start the audio session first.
@@ -33,7 +33,7 @@ export default function App() {
   return (
     <LiveKitRoom
       serverUrl={wsURL}
-      token={token}
+      token={token as string}
       connect={true}
       options={{
         // Use screen pixel density to handle screens with differing densities.

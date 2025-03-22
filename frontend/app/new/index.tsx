@@ -1,30 +1,67 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 import { useRouter } from "expo-router";
-import * as RoomUtils from "@/app/lib/room";
+import * as UserUtils from "@/app/lib/user";
 import { fetchAuthSession } from "aws-amplify/auth";
+import { useState } from "react";
+import SimpleInputComponent from "../components/inputComponents";
+import * as RoomUtils from '@/app/lib/room';
 
-export default function HomeScreen() {
+export default function NewUserScreen() {
   const navigate = useRouter();
+  const [titleName, setTitleName] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState("");
   return (
-    <View style={{ height: "100%" }}>
-      <DefaultHeader title="ホーム" showSettingButton={true} />
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={async () => {
-            const session = await fetchAuthSession();
-            console.log("OK");
-            const res = await RoomUtils.get_room(
-              session.tokens?.idToken?.toString()!,
-            );
-            console.log(res);
-          }}
-        >
-          <Text style={styles.title}>ルームの作成!!</Text>
-        </TouchableOpacity>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <View style={{ height: "100%",width:"100%" }}>
+        <DefaultHeader title="配信の作成" showSettingButton={true} showBackButton={true} />
+        <View style={styles.container}>
+          <SimpleInputComponent title="タイトル" textChange={setTitleName} />
+          <SimpleInputComponent title="説明" textChange={setDescription} />
+          <SimpleInputComponent title="タグ" textChange={setTags} />
+          <TouchableOpacity
+            onPress={async () => {
+              const session = await fetchAuthSession();
+              console.log("OK");
+              const res = await RoomUtils.create_room(session.tokens?.idToken?.toString()!, titleName, description, "");
+              console.log(res);
+              if (res) {
+                navigate.navigate(`/room/${res.token}`);
+              }
+            }}
+            style={{
+              alignContent: "flex-end",
+              alignItems: "flex-end",
+              width: "80%",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#55FF5555",
+                borderRadius: 10,
+                padding: 10,
+                width: "40%",
+                marginTop: 10,
+              }}
+            >
+              <Text style={styles.title}>作成</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -34,10 +71,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: "100%",
+    width: "100%",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
+    textAlign: "center",
   },
   separator: {
     marginVertical: 30,
