@@ -47,7 +47,7 @@ export default function NewUserScreen() {
               );
               console.log(res);
               if (res) {
-                navigate.navigate(`/room/${res.token}`);
+                navigate.navigate(`/publisher/${res.token}`);
               }
             }}
             style={{

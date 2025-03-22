@@ -30,7 +30,7 @@ export default function HomeScreen() {
   }, []);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshNumber, setRefreshNumber] = useState<number>(0);
-  
+
   function pushToReload(): void {
     setRefreshing(true);
     setRefreshNumber(refreshNumber + 1);
@@ -45,14 +45,14 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={pushToReload} />
         }
       >
-        {rooms.map((item) => (
+        {rooms.length == 0 ? rooms.map((item) => (
           <LivePage
             roomId={item.room_id}
             title={item.room_title}
             thumbnail={true}
             ownerName="yomi4486"
           />
-        ))}
+        )):<Text>現在閲覧可能な配信はありません。</Text>}
       </ScrollView>
       <FloatingActionButton
         onPress={() => {

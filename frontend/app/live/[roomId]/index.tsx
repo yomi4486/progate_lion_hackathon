@@ -4,6 +4,7 @@ import { LiveKitRoom } from "@livekit/react-native";
 import * as RoomUtils from "@/app/lib/room";
 import { useEffect, useState } from "react";
 import { fetchAuthSession } from "aws-amplify/auth";
+import {AudioSession} from "@livekit/react-native";
 
 export default function PostDetails() {
   const { roomId } = useLocalSearchParams();
@@ -17,16 +18,23 @@ export default function PostDetails() {
         roomId as string,
       );
       setRoomToken(res?.token!);
-      console.log(res);
     };
     data();
+    let start = async () => {
+      await AudioSession.startAudioSession();
+    };
+
+    start();
+    return () => {
+      AudioSession.stopAudioSession();
+    };
   }, []);
   return (
     <View>
       {roomToken ? (
         <LiveKitRoom
           serverUrl="wss://progatehackathon-0vilmkur.livekit.cloud"
-          token={roomId as string}
+          token={roomToken as string}
           connect={true}
           audio={true}
         ></LiveKitRoom>
