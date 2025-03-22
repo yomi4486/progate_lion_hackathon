@@ -1,12 +1,12 @@
-import { StyleSheet, Button,ScrollView,RefreshControl } from "react-native";
+import { StyleSheet, Button, ScrollView, RefreshControl } from "react-native";
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
 import LivePage from "../components/livePageComponents";
 import FloatingActionButton from "../components/floatActionButton";
 import { useRouter } from "expo-router";
-import * as RoomTools from "@/app/lib/room"
+import * as RoomTools from "@/app/lib/room";
 import { fetchAuthSession } from "aws-amplify/auth";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { AppType } from "../../../backend/src";
 const { hc } = require("hono/dist/client") as typeof import("hono/client");
 import type { InferRequestType, InferResponseType } from "hono/client";
@@ -14,38 +14,38 @@ const client = hc<AppType>(process.env.EXPO_PUBLIC_BASE_URL!);
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [rooms, setRooms] = useState<InferResponseType<typeof client.room.$get, 200>>([]);
+  const [rooms, setRooms] = useState<
+    InferResponseType<typeof client.room.$get, 200>
+  >([]);
+  useEffect(() => {
+    const data = async () => {
+      const session = await fetchAuthSession();
+      const res = await RoomTools.get_room(
+        session.tokens?.idToken?.toString()!,
+      );
+      console.log(res);
+      if (res != null) setRooms(res);
+    };
+    data();
+  }, []);
   const [refreshing, setRefreshing] = useState(false);
-	const [refreshNumber, setRefreshNumber] = useState<number>(0);
-  useEffect(()=>{const data = async()=>{
-    const session = await fetchAuthSession();
-    const res = await RoomTools.get_room(session.tokens?.idToken?.toString()!);
-    console.log("OKKKKKKKKKK") 
-    console.log(res);
-    if(res != null)setRooms(res)
+  const [refreshNumber, setRefreshNumber] = useState<number>(0);
+  
+  function pushToReload(): void {
+    setRefreshing(true);
+    setRefreshNumber(refreshNumber + 1);
+    setRefreshing(false);
   }
-  data()
-  },[refreshNumber])
-
-
-	function pushToReload(): void {
-		setRefreshing(true)
-		setRefreshNumber(refreshNumber + 1)
-		setRefreshing(false)
-	}
   return (
     <View style={{ height: "100%" }}>
       <DefaultHeader title="ホーム" showSettingButton={true} />
-      <ScrollView contentContainerStyle={styles.container}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={pushToReload}
-        />
-      }
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={pushToReload} />
+        }
       >
-        
-        {rooms.map((item)=>(
+        {rooms.map((item) => (
           <LivePage
             roomId={item.room_id}
             title={item.room_title}
@@ -53,7 +53,6 @@ export default function HomeScreen() {
             ownerName="yomi4486"
           />
         ))}
-
       </ScrollView>
       <FloatingActionButton
         onPress={() => {
