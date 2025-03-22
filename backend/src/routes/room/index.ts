@@ -18,7 +18,11 @@ const prisma = new PrismaClient();
 
 export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
   .get("/", async (c) => {
-    const result = await prisma.room.findMany();
+    const result = await prisma.room.findMany({
+      include:{
+        created_user: true
+      }
+    });
 
     if (!result || result.length === 0) {
       return c.json({ message: "Room not found" }, 404);
@@ -34,6 +38,9 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       where: {
         room_id: roomId,
       },
+      include:{
+        created_user: true
+      }
     });
 
     if (!result) {
