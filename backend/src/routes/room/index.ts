@@ -83,7 +83,7 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
       if (!result) {
         return c.json({ message: "Failed to create room" }, 500);
       }
-      
+
       const at = new AccessToken(
         process.env.LIVEKIT_API_KEY as string,
         process.env.LIVEKIT_API_SECRET as string,
@@ -99,7 +99,11 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
         maxParticipants: 100,
       });
 
-      return c.json({ message: "Room created", room_id: id, token: await at.toJwt() });
+      return c.json({
+        message: "Room created",
+        room_id: id,
+        token: await at.toJwt(),
+      });
     },
   )
   .delete("/:id", async (c) => {
