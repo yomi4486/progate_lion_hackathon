@@ -65,3 +65,27 @@ jobs:
             git add .
             git commit -m "Update image tag to ${{ env.IMAGE_TAG }}"
             git push
+        
+        - name: Install kubectl
+          uses: azure/setup-kubectl@v4
+
+        - name: Install ArgoCD
+          run: |
+            sudo apt update
+            curl -sSL -o /usr/local/bin/kubectl https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+            chmod +x /usr/local/bin/kubectl
+            curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+            chmod +x argocd-linux-amd64
+            sudo mv argocd-linux-amd64 /usr/local/bin/argocd
+
+        - name: Configure kubectl for EKS
+          run: |
+            aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name alive-talk
+  
+        - name: Login to ArgoCD
+          run: |
+            argocd login ${{ secrets.ARGOCD_SERVER }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
+  
+        - name: Sync application in ArgoCD
+          run: |
+            argocd app sync alive-talk
