@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: progate-lion-hackathon-app
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: progate-lion-hackathon-app
+  template:
+    metadata:
+      labels:
+        app: progate-lion-hackathon-app
+    spec:
+      containers:
+        - name: progate-lion-hackathon-app
+          image: 1192730322953.dkr.ecr.us-west-2.amazonaws.com/alive-talk/progate_lion_hackathon:${{ github.sha }}
+          ports:
+            - containerPort: 3000
