@@ -30,7 +30,7 @@ export default function HomeScreen() {
   }, []);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshNumber, setRefreshNumber] = useState<number>(0);
-  
+
   function pushToReload(): void {
     setRefreshing(true);
     setRefreshNumber(refreshNumber + 1);
