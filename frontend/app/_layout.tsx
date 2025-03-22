@@ -1,22 +1,26 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
-
+import { registerGlobals } from "@livekit/react-native";
+import { StyleSheet } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
+import { Hub } from "aws-amplify/utils";
 
 import { Authenticator } from "@aws-amplify/ui-react-native";
 import { Amplify } from "aws-amplify";
 import awsconfig from "../src/aws-exports.js";
+import { fetchAuthSession } from "aws-amplify/auth";
+import { useRouter } from "expo-router";
+import * as UserTool from "@/app/lib/user";
+import { View, Text } from "react-native";
+import DefaultRootLayoutNav, { NewUserRootLayoutNav } from "@/app/root";
+
+let isLoaded: boolean = false;
 
 Amplify.configure(awsconfig);
+registerGlobals();
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -32,9 +36,56 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [isNewUser, setNewUser] = useState<boolean | undefined>(undefined);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
+  });
+
+  useEffect(() => {
+    const data = async () => {
+      isLoaded = true;
+      const session = await fetchAuthSession();
+      try {
+        const res = await UserTool.get(
+          session.userSub!,
+          session.tokens?.idToken?.toString()!,
+        );
+        console.log(res);
+        if (res == null) {
+          setNewUser(true);
+        } else {
+          setNewUser(false);
+        }
+      } catch (e) {
+        console.error(e);
+        return;
+      }
+    };
+    data();
+  }, []);
+
+  Hub.listen("auth", async (data) => {
+    if (data.payload.event === "signedIn") {
+      console.log("OK");
+      setNewUser(undefined);
+      const session = await fetchAuthSession();
+      try {
+        const res = await UserTool.get(
+          session.userSub!,
+          session.tokens?.idToken?.toString()!,
+        );
+        console.log(res);
+        if (res == null) {
+          setNewUser(true);
+        } else {
+          setNewUser(false);
+        }
+      } catch (e) {
+        console.error(e);
+        return;
+      }
+    }
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -52,27 +103,69 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return <RootLayoutNav isNewUser={isNewUser} />;
 }
 
-function RootLayoutNav() {
+function RootLayoutNav({ isNewUser }: { isNewUser: boolean | undefined }) {
   const colorScheme = useColorScheme();
-
-  return (
-    <Authenticator.Provider>
-      <Authenticator>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+  const navigate = useRouter();
+  console.log(isNewUser);
+  if (isNewUser === undefined) {
+    return (
+      <Authenticator.Provider>
+        <Authenticator
+          loginMechanisms={["email"]}
+          socialProviders={["google", "apple", "amazon"]}
         >
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: "modal", headerShown: false }}
-            />
-          </Stack>
-        </ThemeProvider>
-      </Authenticator>
-    </Authenticator.Provider>
-  );
+          <View style={styles.container}>
+            <Text>ローディング中</Text>
+          </View>
+        </Authenticator>
+      </Authenticator.Provider>
+    );
+  } else if (isNewUser == true) {
+    return (
+      <Authenticator.Provider>
+        <Authenticator
+          loginMechanisms={["email"]}
+          socialProviders={["google", "apple", "amazon"]}
+        >
+          <NewUserRootLayoutNav />
+        </Authenticator>
+      </Authenticator.Provider>
+    );
+  } else if (isNewUser == false) {
+    return (
+      <Authenticator.Provider>
+        <Authenticator
+          loginMechanisms={["email"]}
+          socialProviders={["google", "apple", "amazon"]}
+        >
+          <DefaultRootLayoutNav />
+        </Authenticator>
+      </Authenticator.Provider>
+    );
+  } else {
+    return (
+      <Authenticator.Provider>
+        <Authenticator
+          loginMechanisms={["email"]}
+          socialProviders={["google", "apple", "amazon"]}
+        >
+          <View style={styles.container}>
+            <Text>ローディング中</Text>
+          </View>
+        </Authenticator>
+      </Authenticator.Provider>
+    );
+  }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ecf0f1",
+  },
+});

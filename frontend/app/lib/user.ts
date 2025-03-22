@@ -7,16 +7,22 @@ const getFromId = client.users[":id"];
 
 export async function get(
   id: string,
+  idToken: string,
 ): Promise<InferResponseType<typeof getFromId.$get, 200> | null> {
   try {
-    const res = await client.users[":id"].$get({
-      param: { id: id },
-    });
-    if (!res.ok) return null;
-    return res.json();
+    const res = await client.users[":id"].$get(
+      {
+        param: { id: id },
+      },
+      { headers: { Authorization: `Bearer ${idToken}` } },
+    );
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error("Failed request");
+    const jsonContent = await res.json();
+    return jsonContent;
   } catch (e) {
     console.error(e);
-    return null;
+    throw new Error(`${e}`);
   }
 }
 
@@ -24,11 +30,15 @@ export async function getMyProfile(
   token: string,
 ): Promise<InferResponseType<typeof client.users.$get, 200> | null> {
   try {
-    const res = await client.users.$get({
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await client.users.$get(
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     if (!res.ok) return null;
-    return res.json();
+    const jsonContent = await res.json();
+    return jsonContent;
   } catch (e) {
     console.error(e);
     return null;
@@ -53,7 +63,8 @@ export async function setMyProfile(
       { headers: { Authorization: `Bearer ${token}` } },
     );
     if (!res.ok) return null;
-    return res.json();
+    const jsonContent = await res.json();
+    return jsonContent;
   } catch (e) {
     console.error(e);
     return null;
@@ -79,7 +90,8 @@ export async function editMyProfile(
       { headers: { Authorization: `Bearer ${token}` } },
     );
     if (!res.ok) return null;
-    return res.json();
+    const jsonContent = await res.json();
+    return jsonContent;
   } catch (e) {
     console.error(e);
     return null;
