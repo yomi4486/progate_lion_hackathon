@@ -9,7 +9,7 @@ import {
   TrackReferenceOrPlaceholder,
   VideoTrack,
   isTrackReference,
-  useRoomContext
+  useRoomContext,
 } from "@livekit/react-native";
 import { Track } from "livekit-client";
 

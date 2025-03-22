@@ -26,9 +26,9 @@ export default function HomeScreen() {
         session.tokens?.idToken?.toString()!,
       );
       console.log(res);
-      if (res != null){
+      if (res != null) {
         setRooms(res);
-      }else{
+      } else {
         setRooms([]);
       }
     };
@@ -48,14 +48,20 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={pushToReload} />
         }
       >
-        {rooms.length != 0 ? rooms.reverse().map((item) => (
-          <LivePage
-            roomId={item.room_id}
-            title={item.room_title}
-            thumbnail={true}
-            ownerName="yomi4486"
-          />
-        )):<Text>現在閲覧可能な配信はありません。</Text>}
+        {rooms.length != 0 ? (
+          rooms
+            .reverse()
+            .map((item) => (
+              <LivePage
+                roomId={item.room_id}
+                title={item.room_title}
+                thumbnail={true}
+                ownerName="yomi4486"
+              />
+            ))
+        ) : (
+          <Text>現在閲覧可能な配信はありません。</Text>
+        )}
       </ScrollView>
       <FloatingActionButton
         onPress={() => {
