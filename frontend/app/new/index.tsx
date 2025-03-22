@@ -12,7 +12,7 @@ import * as UserUtils from "@/app/lib/user";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { useState } from "react";
 import SimpleInputComponent from "../components/inputComponents";
-import * as RoomUtils from '@/app/lib/room';
+import * as RoomUtils from "@/app/lib/room";
 
 export default function NewUserScreen() {
   const navigate = useRouter();
@@ -25,8 +25,12 @@ export default function NewUserScreen() {
         Keyboard.dismiss();
       }}
     >
-      <View style={{ height: "100%",width:"100%" }}>
-        <DefaultHeader title="配信の作成" showSettingButton={true} showBackButton={true} />
+      <View style={{ height: "100%", width: "100%" }}>
+        <DefaultHeader
+          title="配信の作成"
+          showSettingButton={true}
+          showBackButton={true}
+        />
         <View style={styles.container}>
           <SimpleInputComponent title="タイトル" textChange={setTitleName} />
           <SimpleInputComponent title="説明" textChange={setDescription} />
@@ -35,7 +39,12 @@ export default function NewUserScreen() {
             onPress={async () => {
               const session = await fetchAuthSession();
               console.log("OK");
-              const res = await RoomUtils.create_room(session.tokens?.idToken?.toString()!, titleName, description, "");
+              const res = await RoomUtils.create_room(
+                session.tokens?.idToken?.toString()!,
+                titleName,
+                description,
+                "",
+              );
               console.log(res);
               if (res) {
                 navigate.navigate(`/room/${res.token}`);

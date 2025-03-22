@@ -10,9 +10,17 @@ export default function HomeScreen() {
     <View style={{ height: "100%" }}>
       <DefaultHeader title="ホーム" showSettingButton={true} />
       <View style={styles.container}>
-        <LivePage title="【Alive Talk】テスト配信！" thumbnail={true} ownerName="yomi4486" />
+        <LivePage
+          title="【Alive Talk】テスト配信！"
+          thumbnail={true}
+          ownerName="yomi4486"
+        />
       </View>
-      <FloatingActionButton onPress={() => {router.navigate("/new")}} />
+      <FloatingActionButton
+        onPress={() => {
+          router.navigate("/new");
+        }}
+      />
     </View>
   );
 }

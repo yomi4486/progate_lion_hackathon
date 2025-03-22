@@ -11,7 +11,14 @@ export async function create_room(
 ): Promise<InferResponseType<typeof client.room.$post, 200> | null> {
   try {
     const res = await client.room.$post(
-      {json:{room_title:title,room_description:description,room_thumbnail:thumbnail,room_tags:[]}},
+      {
+        json: {
+          room_title: title,
+          room_description: description,
+          room_thumbnail: thumbnail,
+          room_tags: [],
+        },
+      },
       { headers: { Authorization: `Bearer ${idToken}` } },
     );
     console.log(res.status);

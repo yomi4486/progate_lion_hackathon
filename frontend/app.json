@@ -26,10 +26,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "CAMERA",
-        "RECORD_AUDIO"
-      ],
+      "permissions": ["CAMERA", "RECORD_AUDIO"],
       "package": "com.progatelion.hackathon"
     },
     "web": {
