@@ -179,6 +179,7 @@ describe("UserRoute API", () => {
       room_id: expect.stringMatching(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       ), // UUID形式
+      token: "validAccessToken",
     });
   });
 
