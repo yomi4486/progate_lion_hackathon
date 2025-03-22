@@ -16,15 +16,22 @@ jobs:
       REPOSITORY: progate_lion_hackathon
       IMAGE_TAG: ${{ github.sha }}
     steps:
-      - uses: actions/checkout@v31
+      - uses: actions/checkout@v3
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
 
       - name: build and push Docker image to ECR
         run: |
           docker build . --tag ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
           docker push ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
+
