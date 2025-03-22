@@ -9,15 +9,16 @@ import {
   TrackReferenceOrPlaceholder,
   VideoTrack,
   isTrackReference,
+  useRoomContext
 } from "@livekit/react-native";
 import { Track } from "livekit-client";
 
 // !! Note !!
 // This sample hardcodes a token which expires in 2 hours.
 const wsURL = "wss://progatehackathon-0vilmkur.livekit.cloud";
-const { token } = useLocalSearchParams();
 
 export default function App() {
+  const { token } = useLocalSearchParams();
   // Start the audio session first.
   useEffect(() => {
     let start = async () => {
@@ -29,7 +30,6 @@ export default function App() {
       AudioSession.stopAudioSession();
     };
   }, []);
-
   return (
     <LiveKitRoom
       serverUrl={wsURL}
@@ -39,7 +39,7 @@ export default function App() {
         // Use screen pixel density to handle screens with differing densities.
         adaptiveStream: { pixelDensity: "screen" },
       }}
-      audio={false}
+      audio={true}
       video={true}
     >
       <RoomView />
@@ -49,6 +49,7 @@ export default function App() {
 
 const RoomView = () => {
   // Get all camera tracks.
+  const room = useRoomContext();
   const tracks = useTracks([Track.Source.Camera]);
 
   const renderTrack: ListRenderItem<TrackReferenceOrPlaceholder> = ({

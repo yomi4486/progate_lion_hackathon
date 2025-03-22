@@ -14,6 +14,8 @@ const client = hc<AppType>(process.env.EXPO_PUBLIC_BASE_URL!);
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshNumber, setRefreshNumber] = useState<number>(0);
   const [rooms, setRooms] = useState<
     InferResponseType<typeof client.room.$get, 200>
   >([]);
@@ -24,13 +26,14 @@ export default function HomeScreen() {
         session.tokens?.idToken?.toString()!,
       );
       console.log(res);
-      if (res != null) setRooms(res);
+      if (res != null){
+        setRooms(res);
+      }else{
+        setRooms([]);
+      }
     };
     data();
-  }, []);
-  const [refreshing, setRefreshing] = useState(false);
-  const [refreshNumber, setRefreshNumber] = useState<number>(0);
-
+  }, [refreshNumber]);
   function pushToReload(): void {
     setRefreshing(true);
     setRefreshNumber(refreshNumber + 1);
@@ -45,7 +48,7 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={pushToReload} />
         }
       >
-        {rooms.length == 0 ? rooms.map((item) => (
+        {rooms.length != 0 ? rooms.reverse().map((item) => (
           <LivePage
             roomId={item.room_id}
             title={item.room_title}
@@ -66,10 +69,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100%",
   },
   title: {
     fontSize: 20,

@@ -51,6 +51,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4, // シャドウのぼかし
     // Android用シャドウ
     elevation: 5, // 高さ（シャドウの強さに影響）
+    marginTop:10,
+    marginBottom:10
   },
   image: {
     width: "100%", // 画像の横幅を親要素に合わせる
