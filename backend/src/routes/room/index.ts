@@ -93,6 +93,8 @@ export const RoomRoute = new Hono<{ Variables: { userId: string } }>()
         },
       );
 
+      at.addGrant({ roomJoin: true, room: id });
+
       await roomService.createRoom({
         name: id,
         emptyTimeout: 10 * 60, // 10 minutes
