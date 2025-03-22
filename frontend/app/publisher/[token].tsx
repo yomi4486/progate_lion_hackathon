@@ -1,7 +1,9 @@
 import * as React from "react";
-import { StyleSheet, View, FlatList, ListRenderItem } from "react-native";
-import { useEffect } from "react";
+import { StyleSheet, View, FlatList, ListRenderItem, Text,KeyboardAvoidingView,Platform,Button, TextInput,Keyboard,TouchableWithoutFeedback, TouchableOpacity,SafeAreaView } from "react-native";
+import { useEffect,useState } from "react";
 import { useLocalSearchParams } from "expo-router";
+import * as CommentTools from '@/app/lib/comment';
+import SimpleInputComponent from "../components/inputComponents";
 import {
   AudioSession,
   LiveKitRoom,
@@ -13,6 +15,8 @@ import {
   useLiveKitRoom
 } from "@livekit/react-native";
 import { Track,RemoteVideoTrack } from "livekit-client";
+import Feather from '@expo/vector-icons/Feather';
+
 
 // !! Note !!
 // This sample hardcodes a token which expires in 2 hours.
@@ -51,6 +55,7 @@ export default function App() {
 const RoomView = () => {
   // Get all camera tracks.
   const room = useRoomContext();
+  const [ comment, setComment ] = useState("");
   const tracks = useTracks([RemoteVideoTrack.Source.Camera]);
 
   const renderTrack: ListRenderItem<TrackReferenceOrPlaceholder> = ({
@@ -71,9 +76,42 @@ const RoomView = () => {
   };
 
   return (
-    <View>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+    <SafeAreaView
+      style={{ flex: 1 }}
+    >
       <FlatList data={tracks} renderItem={renderTrack} />
-    </View>
+      <KeyboardAvoidingView
+        style={styles.footer}
+      >
+        <View style={styles.fixedFooter}>
+          <View style={{width:"80%"}}>
+                <TextInput
+                  onChangeText={(t) => {
+                    setComment(t);
+                  }}
+                  style={{
+                    height: 40,
+                    width: "100%",
+                    borderColor: "brack",
+                    borderWidth: 0.5,
+                    borderRadius: 50,
+                    marginBottom: 15,
+                    paddingHorizontal: 10,
+                  }}
+                />
+          </View>
+          <TouchableOpacity>
+            <Feather name="arrow-up-circle" size={40} color={"#000000"} />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -86,4 +124,31 @@ const styles = StyleSheet.create({
     flex: 1,
     aspectRatio: 0.5,
   },
+  input: {
+    width: '90%',
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 20,
+  },
+  footer: {
+    justifyContent: 'flex-end',
+    position:"fixed"
+  },
+  fixedFooter: {
+    backgroundColor: '#ffffff',
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    flexDirection: 'row', // 要素を横並びに配置
+    justifyContent: 'space-between',
+    marginBottom:30
+  },
+  button: {
+    padding: 10, // ボタンのタッチ領域を広げる
+    borderRadius: 50, // 丸いボタンを作成する場合
+  },
 });
+
