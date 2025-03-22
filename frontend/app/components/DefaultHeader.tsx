@@ -19,7 +19,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
   const router = useRouter();
   return (
     <Header
-      style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex:1000}}
+      style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 1000 }}
       leftComponent={
         <View style={{ flexDirection: "row" }}>
           {showBackButton ? (
