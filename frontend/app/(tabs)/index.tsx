@@ -14,17 +14,19 @@ const client = hc<AppType>(process.env.EXPO_PUBLIC_BASE_URL!);
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [rooms, setRooms] = useState<InferResponseType<typeof client.room.$get, 200>>([])
+  const [rooms, setRooms] = useState<InferResponseType<typeof client.room.$get, 200>>([]);
+  const [refreshing, setRefreshing] = useState(false);
+	const [refreshNumber, setRefreshNumber] = useState<number>(0);
   useEffect(()=>{const data = async()=>{
     const session = await fetchAuthSession();
-    const res = await RoomTools.get_room(session.tokens?.idToken?.toString()!); 
+    const res = await RoomTools.get_room(session.tokens?.idToken?.toString()!);
+    console.log("OKKKKKKKKKK") 
     console.log(res);
     if(res != null)setRooms(res)
   }
   data()
-  },[])
-  const [refreshing, setRefreshing] = useState(false)
-	const [refreshNumber, setRefreshNumber] = useState<number>(0)
+  },[refreshNumber])
+
 
 	function pushToReload(): void {
 		setRefreshing(true)
