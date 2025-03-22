@@ -28,8 +28,10 @@ export default function PostDetails() {
         roomId as string,
       );
       setRoomToken(res?.token!);
-      const userRes = await UserUtils.getMyProfile(session.tokens?.idToken?.toString()!)
-      if(userRes)setUserId(userRes.id)
+      const userRes = await UserUtils.getMyProfile(
+        session.tokens?.idToken?.toString()!,
+      );
+      if (userRes) setUserId(userRes.id);
     };
     data();
     let start = async () => {
@@ -49,12 +51,12 @@ export default function PostDetails() {
           token={roomToken as string}
           connect={true}
           options={{
-            adaptiveStream: { pixelDensity: 'screen' },
+            adaptiveStream: { pixelDensity: "screen" },
           }}
           audio={false}
           video={false}
         >
-          <RoomView username={userId}/>
+          <RoomView username={userId} />
         </LiveKitRoom>
       ) : (
         <Text>Loading...</Text>
@@ -63,14 +65,16 @@ export default function PostDetails() {
   );
 }
 
-
-const RoomView = ({username}:{username:string|null}) => {
+const RoomView = ({ username }: { username: string | null }) => {
   // Get all camera tracks.
   const room = useRoomContext();
-  const encoder = new TextEncoder()
-  const data = encoder.encode(JSON.stringify(username))
-  room.localParticipant.publishData(data, { reliable: false })
-  const tracks = useTracks([{source:Track.Source.Camera,withPlaceholder:true}],{room:room,});
+  const encoder = new TextEncoder();
+  const data = encoder.encode(JSON.stringify(username));
+  room.localParticipant.publishData(data, { reliable: false });
+  const tracks = useTracks(
+    [{ source: Track.Source.Camera, withPlaceholder: true }],
+    { room: room },
+  );
   const renderTrack: ListRenderItem<TrackReferenceOrPlaceholder> = ({
     item,
   }) => {

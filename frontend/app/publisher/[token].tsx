@@ -10,9 +10,9 @@ import {
   VideoTrack,
   isTrackReference,
   useRoomContext,
-  useLiveKitRoom
+  useLiveKitRoom,
 } from "@livekit/react-native";
-import { Track,RemoteVideoTrack } from "livekit-client";
+import { Track, RemoteVideoTrack } from "livekit-client";
 
 // !! Note !!
 // This sample hardcodes a token which expires in 2 hours.
