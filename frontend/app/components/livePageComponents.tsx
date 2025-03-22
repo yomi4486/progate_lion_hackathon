@@ -12,7 +12,7 @@ interface LivePageProps {
   description?: string;
   ownerName: string;
   thumbnail: boolean;
-  showBackButton?: boolean; /// 任意プロパティ
+  roomId: string;
 }
 
 const LivePage: React.FC<LivePageProps> = ({
@@ -20,14 +20,14 @@ const LivePage: React.FC<LivePageProps> = ({
   thumbnail,
   ownerName,
   description,
-  showBackButton = false,
+  roomId,
 }) => {
   const router = useRouter();
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => {
-        router.push("../live/a");
+        router.push(`../live/${roomId}`);
       }}
     >
       <Image source={Thumbnail} style={styles.image} />
