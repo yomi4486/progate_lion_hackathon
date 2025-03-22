@@ -1,9 +1,7 @@
 name: "Deploy and Trigger ArgoCD"
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
 
 defaults:
   run:
