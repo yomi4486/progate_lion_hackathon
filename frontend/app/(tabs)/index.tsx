@@ -1,30 +1,13 @@
-import {
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  Modal,
-  Animated,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { StyleSheet, Button } from "react-native";
 import { Text, View } from "@/components/Themed";
 import DefaultHeader from "../components/DefaultHeader";
-import { useRouter } from "expo-router";
-import FloatingActionButton from "../components/floatActionButton";
-
+import LivePage from "../components/livePageComponents";
 export default function HomeScreen() {
-  const navigate = useRouter();
   return (
     <View style={{ height: "100%" }}>
       <DefaultHeader title="ホーム" showSettingButton={true} />
       <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => {
-            navigate.navigate("/room");
-          }}
-        >
-          <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
-        </TouchableOpacity>
-        <FloatingActionButton onPress={() => navigate.navigate("/new")} />
+        <LivePage title="ホーム" thumbnail={true} />
       </View>
     </View>
   );

@@ -1,11 +1,11 @@
 import { StyleSheet } from "react-native";
-
+import LivePage from "./components/livePageComponents";
 import { Text, View } from "@/components/Themed";
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>こんにちは！これはホーム画面です</Text>
+      <LivePage title="ホーム" thumbnail={true} />
     </View>
   );
 }
