@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, ListRenderItem, Text,KeyboardAvoidingView,P
 import { useEffect,useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import * as CommentTools from '@/app/lib/comment';
-import SimpleInputComponent from "../components/inputComponents";
+
 import {
   AudioSession,
   LiveKitRoom,
@@ -16,6 +16,12 @@ import {
 } from "@livekit/react-native";
 import { Track,RemoteVideoTrack } from "livekit-client";
 import Feather from '@expo/vector-icons/Feather';
+import { fetchAuthSession } from "aws-amplify/auth";
+import { AppType } from "../../../../backend/src";
+const { hc } = require("hono/dist/client") as typeof import("hono/client");
+import type { InferRequestType, InferResponseType } from "hono/client";
+const client = hc<AppType>(process.env.EXPO_PUBLIC_BASE_URL!);
+
 
 
 // !! Note !!
@@ -23,7 +29,7 @@ import Feather from '@expo/vector-icons/Feather';
 const wsURL = "wss://progatehackathon-0vilmkur.livekit.cloud";
 
 export default function App() {
-  const { token } = useLocalSearchParams();
+  const { roomId,token } = useLocalSearchParams();
   // Start the audio session first.
   useEffect(() => {
     let start = async () => {
@@ -47,17 +53,30 @@ export default function App() {
       audio={true}
       video={true}
     >
-      <RoomView />
+      <RoomView roomId={roomId as string} />
     </LiveKitRoom>
   );
 }
 
-const RoomView = () => {
+const RoomView = ({roomId}:{roomId:string}) => {
   // Get all camera tracks.
   const room = useRoomContext();
   const [ comment, setComment ] = useState("");
+  const roomIdFromGet = client.comments[":roomId"];
+  const [ comments, setComments ] = useState<InferResponseType<typeof roomIdFromGet.$get, 200>>({comments:[]});
   const tracks = useTracks([RemoteVideoTrack.Source.Camera]);
 
+  setInterval(()=>{
+    const data = async()=>{
+      const session = await fetchAuthSession();
+      const res = await CommentTools.getComment(session.tokens?.idToken?.toString()!,roomId);
+      console.log(res)
+      if(res?.comments != undefined)setComments(res?.comments);
+    }
+    data();
+  },1000)
+
+  useEffect(()=>{},[comments]);
   const renderTrack: ListRenderItem<TrackReferenceOrPlaceholder> = ({
     item,
   }) => {
@@ -84,6 +103,17 @@ const RoomView = () => {
     <SafeAreaView
       style={{ flex: 1 }}
     >
+      <View style={{position:"absolute"}}>
+      <FlatList
+      data={comments.comments}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({ item }) => (
+        <View style={styles.commentContainer}>
+          <Text style={styles.commentText}>{item["comment"]}</Text>
+        </View>
+      )}
+      />
+      </View>
       <FlatList data={tracks} renderItem={renderTrack} />
       <KeyboardAvoidingView
         style={styles.footer}
@@ -105,7 +135,10 @@ const RoomView = () => {
                   }}
                 />
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={async()=>{
+            const session = await fetchAuthSession();
+            CommentTools.createCommnet(session.tokens?.idToken?.toString()!,comment,0,roomId)
+          }}>
             <Feather name="arrow-up-circle" size={40} color={"#000000"} />
           </TouchableOpacity>
         </View>
@@ -149,6 +182,15 @@ const styles = StyleSheet.create({
   button: {
     padding: 10, // ボタンのタッチ領域を広げる
     borderRadius: 50, // 丸いボタンを作成する場合
+  },
+  commentContainer: {
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 5,
+  },
+  commentText: {
+    fontSize: 16,
   },
 });
 
