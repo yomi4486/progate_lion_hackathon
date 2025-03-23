@@ -16,7 +16,7 @@ import { useRouter } from "expo-router";
 import * as UserTool from "@/app/lib/user";
 import { View, Text, Image } from "react-native";
 import DefaultRootLayoutNav, { NewUserRootLayoutNav } from "@/app/root";
-import Logo from '@/app/images/logo.png';
+import Logo from "@/app/images/logo.png";
 
 let isLoaded: boolean = false;
 
@@ -119,8 +119,8 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean | undefined }) {
           socialProviders={["google", "apple", "amazon"]}
         >
           <View style={styles.container}>
-          <Image source={Logo} style={{width: 200,height:200}} />
-          <Text>ローディング中</Text>
+            <Image source={Logo} style={{ width: 200, height: 200 }} />
+            <Text>ローディング中</Text>
           </View>
         </Authenticator>
       </Authenticator.Provider>
@@ -155,9 +155,8 @@ function RootLayoutNav({ isNewUser }: { isNewUser: boolean | undefined }) {
           socialProviders={["google", "apple", "amazon"]}
         >
           <View style={styles.container}>
-            <Image source={Logo} style={{width: 300,height:300}} />
+            <Image source={Logo} style={{ width: 300, height: 300 }} />
             <Text>ローディング中</Text>
-
           </View>
         </Authenticator>
       </Authenticator.Provider>
