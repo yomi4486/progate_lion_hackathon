@@ -37,8 +37,10 @@ export default function PostDetails() {
         roomId as string,
       );
       setRoomToken(res?.token!);
-      const userRes = await UserUtils.getMyProfile(session.tokens?.idToken?.toString()!)
-      if(userRes)setUserId(userRes.id)
+      const userRes = await UserUtils.getMyProfile(
+        session.tokens?.idToken?.toString()!,
+      );
+      if (userRes) setUserId(userRes.id);
     };
     data();
     let start = async () => {
@@ -58,7 +60,7 @@ export default function PostDetails() {
           token={roomToken as string}
           connect={true}
           options={{
-            adaptiveStream: { pixelDensity: 'screen' },
+            adaptiveStream: { pixelDensity: "screen" },
           }}
           audio={false}
           video={false}
@@ -72,7 +74,6 @@ export default function PostDetails() {
   );
 }
 
-
 const RoomView = ({username,roomId}:{username:string|null,roomId:string}) => {
   // Get all camera tracks.
   const room = useRoomContext();
@@ -82,6 +83,7 @@ const RoomView = ({username,roomId}:{username:string|null,roomId:string}) => {
   const tracks = useTracks([{source:Track.Source.Camera,withPlaceholder:true}],{room:room,});
   const [ comment, setComment ] = useState("");
   const [ comments, setComments ] = useState<InferResponseType<typeof roomIdFromGet.$get, 200>>({comments:[]});
+
   const renderTrack: ListRenderItem<TrackReferenceOrPlaceholder> = ({
     item,
   }) => {
