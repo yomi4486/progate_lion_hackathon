@@ -10,8 +10,9 @@ import {
   VideoTrack,
   isTrackReference,
   useRoomContext,
+  useLiveKitRoom,
 } from "@livekit/react-native";
-import { Track } from "livekit-client";
+import { Track, RemoteVideoTrack } from "livekit-client";
 
 // !! Note !!
 // This sample hardcodes a token which expires in 2 hours.
@@ -50,7 +51,7 @@ export default function App() {
 const RoomView = () => {
   // Get all camera tracks.
   const room = useRoomContext();
-  const tracks = useTracks([Track.Source.Camera]);
+  const tracks = useTracks([RemoteVideoTrack.Source.Camera]);
 
   const renderTrack: ListRenderItem<TrackReferenceOrPlaceholder> = ({
     item,
