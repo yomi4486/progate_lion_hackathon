@@ -1,58 +1,49 @@
-import { useLocalSearchParams } from "expo-router";
+import * as React from "react";
 import {
+  StyleSheet,
   View,
+  FlatList,
+  ListRenderItem,
   Text,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  SafeAreaView,
+  Platform,
+  Button,
   TextInput,
-  TouchableOpacity,
   Keyboard,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
-import * as RoomUtils from "@/app/lib/room";
-import * as UserUtils from "@/app/lib/user";
 import { useEffect, useState } from "react";
-import { fetchAuthSession } from "aws-amplify/auth";
+import { useLocalSearchParams } from "expo-router";
+import * as CommentTools from "@/app/lib/comment";
+
 import {
   AudioSession,
   LiveKitRoom,
-  useRoomContext,
   useTracks,
   TrackReferenceOrPlaceholder,
   VideoTrack,
   isTrackReference,
+  useRoomContext,
+  useLiveKitRoom,
 } from "@livekit/react-native";
-import { RemoteTrack, RemoteVideoTrack, Room, Track } from "livekit-client";
-import { StyleSheet, FlatList, ListRenderItem } from "react-native";
+import { Track, RemoteVideoTrack } from "livekit-client";
+import Feather from "@expo/vector-icons/Feather";
+import { fetchAuthSession } from "aws-amplify/auth";
 import { AppType } from "../../../../backend/src";
 const { hc } = require("hono/dist/client") as typeof import("hono/client");
-import { Feather } from "@expo/vector-icons";
 import type { InferRequestType, InferResponseType } from "hono/client";
-import * as CommentTools from "@/app/lib/comment";
 const client = hc<AppType>(process.env.EXPO_PUBLIC_BASE_URL!);
-const roomIdFromGet = client.comments[":roomId"];
 
-export default function PostDetails() {
-  const { roomId } = useLocalSearchParams();
-  const [roomToken, setRoomToken] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [comments, setComments] = useState<
-    InferResponseType<typeof roomIdFromGet.$get, 200>
-  >({ comments: [] });
+// !! Note !!
+// This sample hardcodes a token which expires in 2 hours.
+const wsURL = "wss://progatehackathon-0vilmkur.livekit.cloud";
+
+export default function App() {
+  const { roomId, token } = useLocalSearchParams();
+  // Start the audio session first.
   useEffect(() => {
-    const data = async () => {
-      const session = await fetchAuthSession();
-      const res = await RoomUtils.getRoomFromId(
-        session.tokens?.idToken?.toString()!,
-        roomId as string,
-      );
-      setRoomToken(res?.token!);
-      const userRes = await UserUtils.getMyProfile(
-        session.tokens?.idToken?.toString()!,
-      );
-      if (userRes) setUserId(userRes.id);
-    };
-    data();
     let start = async () => {
       await AudioSession.startAudioSession();
     };
@@ -63,48 +54,46 @@ export default function PostDetails() {
     };
   }, []);
   return (
-    <View>
-      {roomToken ? (
-        <LiveKitRoom
-          serverUrl="wss://progatehackathon-0vilmkur.livekit.cloud"
-          token={roomToken as string}
-          connect={true}
-          options={{
-            adaptiveStream: { pixelDensity: "screen" },
-          }}
-          audio={false}
-          video={false}
-        >
-          <RoomView username={userId} roomId={roomId as string} />
-        </LiveKitRoom>
-      ) : (
-        <Text>Loading...</Text>
-      )}
-    </View>
+    <LiveKitRoom
+      serverUrl={wsURL}
+      token={token as string}
+      connect={true}
+      options={{
+        // Use screen pixel density to handle screens with differing densities.
+        adaptiveStream: { pixelDensity: "screen" },
+      }}
+      audio={true}
+      video={true}
+    >
+      <RoomView roomId={roomId as string} />
+    </LiveKitRoom>
   );
 }
 
-const RoomView = ({
-  username,
-  roomId,
-}: {
-  username: string | null;
-  roomId: string;
-}) => {
+const RoomView = ({ roomId }: { roomId: string }) => {
   // Get all camera tracks.
   const room = useRoomContext();
-  const encoder = new TextEncoder();
-  const data = encoder.encode(JSON.stringify(username));
-  room.localParticipant.publishData(data, { reliable: false });
-  const tracks = useTracks(
-    [{ source: Track.Source.Camera, withPlaceholder: true }],
-    { room: room },
-  );
   const [comment, setComment] = useState("");
+  const roomIdFromGet = client.comments[":roomId"];
   const [comments, setComments] = useState<
     InferResponseType<typeof roomIdFromGet.$get, 200>
   >({ comments: [] });
+  const tracks = useTracks([RemoteVideoTrack.Source.Camera]);
 
+  setInterval(() => {
+    const data = async () => {
+      const session = await fetchAuthSession();
+      const res = await CommentTools.getComment(
+        session.tokens?.idToken?.toString()!,
+        roomId,
+      );
+      console.log(res);
+      if (res?.comments != undefined) setComments(res?.comments);
+    };
+    data();
+  }, 1000);
+
+  useEffect(() => {}, [comments]);
   const renderTrack: ListRenderItem<TrackReferenceOrPlaceholder> = ({
     item,
   }) => {
@@ -121,19 +110,6 @@ const RoomView = ({
       return <View style={styles.participantView} />;
     }
   };
-  setInterval(() => {
-    const data = async () => {
-      const session = await fetchAuthSession();
-      const res = await CommentTools.getComment(
-        session.tokens?.idToken?.toString()!,
-        roomId,
-      );
-      if (res?.comments != undefined) setComments(res?.comments);
-    };
-    data();
-  }, 1000);
-
-  useEffect(() => {}, [comments]);
 
   return (
     <TouchableWithoutFeedback
